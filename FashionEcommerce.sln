@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FashionEcommerce.API", "src\FashionEcommerce.API\FashionEcommerce.API.csproj", "{1A1A1A1A-1A1A-1A1A-1A1A-1A1A1A1A1A1A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FashionEcommerce.Core", "src\FashionEcommerce.Core\FashionEcommerce.Core.csproj", "{2B2B2B2B-2B2B-2B2B-2B2B-2B2B2B2B2B2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FashionEcommerce.Data", "src\FashionEcommerce.Data\FashionEcommerce.Data.csproj", "{3C3C3C3C-3C3C-3C3C-3C3C-3C3C3C3C3C3C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FashionEcommerce.Services", "src\FashionEcommerce.Services\FashionEcommerce.Services.csproj", "{4D4D4D4D-4D4D-4D4D-4D4D-4D4D4D4D4D4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A1A1A1A-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1A1A1A-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1A1A1A-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1A1A1A-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B2B2B2B-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B2B2B2B-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B2B2B2B-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B2B2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C3C3C3C-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C3C3C3C-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C3C3C3C-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C3C3C3C-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D4D4D4D-4D4D-4D4D-4D4D-4D4D4D4D4D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D4D4D4D-4D4D-4D4D-4D4D-4D4D4D4D4D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D4D4D4D-4D4D-4D4D-4D4D-4D4D4D4D4D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D4D4D4D-4D4D-4D4D-4D4D-4D4D4D4D4D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

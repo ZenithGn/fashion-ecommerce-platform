@@ -1,0 +1,95 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# ReSharper is a .NET coding add-in
+.resharper
+.resharper/
+._resharper
+.vs/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build folder used by FAKE/CAKE/Alire
+.fake/
+
+# dotenv local files
+.env.local
+.env.*.local
+
+# User Specific & automatically generated paths
+/connection.config
+
+# Database files
+*.mdf
+*.ldf
+*.ndf
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+
+# dotnet user secrets
+.user-secrets/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Entity Framework Core
+appsettings.Development.json
+appsettings.Production.json
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage/
+coverage.xml
+
+# Node (if any frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
