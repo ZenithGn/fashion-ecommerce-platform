@@ -1,4 +1,5 @@
 using FashionEcommerce.API.Models.Auth;
+using FashionEcommerce.API.Services.Email;
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
 using Microsoft.AspNetCore.Identity;
@@ -19,16 +20,19 @@ namespace FashionEcommerce.API.Controllers
         private readonly FashionEcommerceDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthController> _logger;
+        private readonly IEmailSender _emailSender;
         private readonly PasswordHasher<User> _passwordHasher = new();
 
         public AuthController(
             FashionEcommerceDbContext context,
             IConfiguration configuration,
-            ILogger<AuthController> logger)
+            ILogger<AuthController> logger,
+            IEmailSender emailSender)
         {
             _context = context;
             _configuration = configuration;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         [HttpPost("register")]
@@ -194,10 +198,21 @@ namespace FashionEcommerce.API.Controllers
                 user.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
+                var subject = "Reset your password";
+                var body = $"Hello {user.FirstName},\n\nYour password reset token is: {resetToken}\n\nThis token expires at {user.PasswordResetTokenExpiry:O} UTC.\n\nIf you did not request this, please ignore this email.";
+                try
+                {
+                    await _emailSender.SendAsync(user.Email, subject, body);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send password reset email to {Email}", user.Email);
+                    // Do not expose SMTP errors to the caller — respond as if token was generated.
+                }
+
                 return Ok(new PasswordResetResponse
                 {
-                    Message = "Reset token generated successfully.",
-                    ResetToken = resetToken,
+                    Message = "If the email exists, a reset token has been generated.",
                     ExpiresAtUtc = user.PasswordResetTokenExpiry
                 });
             }

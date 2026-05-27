@@ -43,7 +43,6 @@ namespace FashionEcommerce.API.Models.Auth
     public sealed class PasswordResetResponse
     {
         public string Message { get; set; } = string.Empty;
-        public string? ResetToken { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }
     }
 }

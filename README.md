@@ -29,6 +29,25 @@ dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 - `POST /api/auth/request-password-reset`
 - `POST /api/auth/reset-password`
 
+### Reset mật khẩu qua email thật
+
+Để gửi mail thật bằng Gmail, cần cấu hình `EmailSettings` với:
+
+- `SmtpHost`: `smtp.gmail.com`
+- `SmtpPort`: `587`
+- `Username` / `FromEmail`: Gmail gửi mail
+- `Password`: Gmail App Password, không dùng mật khẩu đăng nhập thường
+
+Mẫu request reset cho email của bạn:
+
+```json
+{
+  "email": "khangblue1101@gmail.com"
+}
+```
+
+Sau khi gọi `POST /api/auth/request-password-reset`, token sẽ được gửi vào inbox email này.
+
 ### Swagger
 
 `https://localhost:5001/swagger`

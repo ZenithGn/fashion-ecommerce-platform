@@ -1,4 +1,6 @@
 using FashionEcommerce.Data;
+using FashionEcommerce.API.Models.Email;
+using FashionEcommerce.API.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "FashionEcommerce API",
+        Version = "v1"
+    });
+});
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");
@@ -67,7 +78,11 @@ using (var scope = app.Services.CreateScope())
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FashionEcommerce API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseCors("AllowAll");
 app.UseAuthentication();
