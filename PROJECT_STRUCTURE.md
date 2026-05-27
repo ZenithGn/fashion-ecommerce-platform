@@ -19,7 +19,7 @@ Fashion E-Commerce Platform là một backend được xây dựng hoàn toàn b
 
 - .NET 8.0
 - Entity Framework Core 8.0
-- SQL Server
+- PostgreSQL / Neon
 - Swagger/OpenAPI
 - CORS Support
 
@@ -291,7 +291,7 @@ IsDeleted
 ### Yêu Cầu:
 
 - .NET SDK 8.0 trở lên
-- SQL Server
+- PostgreSQL / Neon
 - Visual Studio 2022 (khuyến nghị)
 
 ### Các Bước:
@@ -309,7 +309,7 @@ Chỉnh sửa [appsettings.json](src/FashionEcommerce.API/appsettings.json):
 
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=YOUR_SERVER;Database=FashionEcommerce;Trusted_Connection=true;"
+    "DefaultConnection": "Host=YOUR_NEON_HOST;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
 }
 ```
 
@@ -322,16 +322,15 @@ dotnet restore
 4. **Tạo migrations và cơ sở dữ liệu**
 
 ```bash
-cd src/FashionEcommerce.Data
-dotnet ef migrations add InitialCreate -s ../FashionEcommerce.API
-dotnet ef database update -s ../FashionEcommerce.API
+dotnet restore
+dotnet build
+dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 ```
 
 5. **Chạy ứng dụng**
 
 ```bash
-cd src/FashionEcommerce.API
-dotnet run
+dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 ```
 
 Ứng dụng sẽ khả dụng tại: `https://localhost:5001`
@@ -366,9 +365,10 @@ https://localhost:5001/swagger/index.html
 
 #### Users
 
-- `GET /api/users` - Lấy tất cả người dùng
-- `GET /api/users/{id}` - Lấy người dùng theo ID
-- `POST /api/users` - Tạo người dùng mới
+- `POST /api/auth/register` - Đăng ký tài khoản
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/request-password-reset` - Tạo token reset mật khẩu
+- `POST /api/auth/reset-password` - Đặt lại mật khẩu
 
 #### Orders
 
@@ -387,7 +387,7 @@ https://localhost:5001/swagger/index.html
 
 ## 🔐 Bảo Mật
 
-- JWT Authentication (sẽ được thêm)
+- JWT Authentication
 - CORS configuration
 - Hashed passwords
 - Soft delete
@@ -396,7 +396,7 @@ https://localhost:5001/swagger/index.html
 
 ### Tiếp Theo:
 
-- [ ] Implement authentication & authorization
+- [ ] Implement authorization & roles
 - [ ] Add validation rules
 - [ ] Implement DTOs (Data Transfer Objects)
 - [ ] Add unit tests
@@ -415,6 +415,7 @@ https://localhost:5001/swagger/index.html
 - ✅ Async/Await
 - ✅ Soft Delete Pattern
 - ✅ Audit Trails (CreatedAt, UpdatedAt)
+- ✅ JWT authentication
 
 ## 📞 Liên Hệ & Hỗ Trợ
 
