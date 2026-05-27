@@ -8,7 +8,7 @@ Nội dung file:
 
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=YOUR_NEON_HOST;Port=5432;Database=YOUR_DATABASE_NAME;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
+    "DefaultConnection": "Host=YOUR_NEON_HOST;Database=YOUR_DATABASE_NAME;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
   }
 }
 Thay các giá trị sau bằng thông tin lấy từ Neon Console:
