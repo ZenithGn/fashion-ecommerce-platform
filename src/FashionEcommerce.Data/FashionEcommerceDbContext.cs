@@ -15,6 +15,10 @@ namespace FashionEcommerce.Data
 
         // DbSets
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
+        public DbSet<Permission> Permissions { get; set; } = null!;
+        public DbSet<RolePermission> RolePermissions { get; set; } = null!;
+        public DbSet<UserAddress> UserAddresses { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Inventory> Inventories { get; set; } = null!;
@@ -27,6 +31,38 @@ namespace FashionEcommerce.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure Role entity
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.RoleName).IsRequired().HasMaxLength(50);
+                entity.HasIndex(e => e.RoleName).IsUnique();
+            });
+
+            // Configure Permission entity
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ActionName).IsRequired().HasMaxLength(100);
+                entity.HasIndex(e => e.ActionName).IsUnique();
+            });
+
+            // Configure RolePermission join table
+            modelBuilder.Entity<RolePermission>(entity =>
+            {
+                entity.HasKey(e => new { e.RoleId, e.PermissionId });
+
+                entity.HasOne(e => e.Role)
+                    .WithMany(r => r.RolePermissions)
+                    .HasForeignKey(e => e.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Permission)
+                    .WithMany(p => p.RolePermissions)
+                    .HasForeignKey(e => e.PermissionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             // Configure User entity
             modelBuilder.Entity<User>(entity =>
             {
@@ -35,14 +71,39 @@ namespace FashionEcommerce.Data
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.RoleId).HasDefaultValue(2);
+
+                entity.HasOne(e => e.Role)
+                    .WithMany(r => r.Users)
+                    .HasForeignKey(e => e.RoleId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(e => e.Addresses)
+                    .WithOne(a => a.User)
+                    .HasForeignKey(a => a.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasMany(e => e.Orders)
                     .WithOne(o => o.User)
                     .HasForeignKey(o => o.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne(e => e.Cart)
                     .WithOne(c => c.User)
                     .HasForeignKey<Cart>(c => c.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure UserAddress entity
+            modelBuilder.Entity<UserAddress>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ReceiverName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.AddressLine).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.Ward).HasMaxLength(100);
+                entity.Property(e => e.District).HasMaxLength(100);
+                entity.Property(e => e.Province).HasMaxLength(100);
             });
 
             // Configure Category entity
@@ -133,6 +194,37 @@ namespace FashionEcommerce.Data
 
         private void SeedData(ModelBuilder modelBuilder)
         {
+            // Seed Roles
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, RoleName = "Admin", Description = "System administrator", IsDeleted = false },
+                new Role { Id = 2, RoleName = "Customer", Description = "Customer account", IsDeleted = false },
+                new Role { Id = 3, RoleName = "Staff", Description = "Store staff account", IsDeleted = false }
+            );
+
+            // Seed Permissions
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { Id = 1, ActionName = "products.view", Description = "View products", IsDeleted = false },
+                new Permission { Id = 2, ActionName = "products.manage", Description = "Create, update and delete products", IsDeleted = false },
+                new Permission { Id = 3, ActionName = "orders.view", Description = "View orders", IsDeleted = false },
+                new Permission { Id = 4, ActionName = "orders.manage", Description = "Manage orders", IsDeleted = false },
+                new Permission { Id = 5, ActionName = "users.manage", Description = "Manage users and staff", IsDeleted = false },
+                new Permission { Id = 6, ActionName = "reports.view", Description = "View reports", IsDeleted = false }
+            );
+
+            // Seed Role Permissions
+            modelBuilder.Entity<RolePermission>().HasData(
+                new RolePermission { RoleId = 1, PermissionId = 1 },
+                new RolePermission { RoleId = 1, PermissionId = 2 },
+                new RolePermission { RoleId = 1, PermissionId = 3 },
+                new RolePermission { RoleId = 1, PermissionId = 4 },
+                new RolePermission { RoleId = 1, PermissionId = 5 },
+                new RolePermission { RoleId = 1, PermissionId = 6 },
+                new RolePermission { RoleId = 3, PermissionId = 1 },
+                new RolePermission { RoleId = 3, PermissionId = 3 },
+                new RolePermission { RoleId = 3, PermissionId = 4 },
+                new RolePermission { RoleId = 2, PermissionId = 1 }
+            );
+
             // Seed Categories
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Nam", Description = "Thời trang nam", IsActive = true },
@@ -150,8 +242,7 @@ namespace FashionEcommerce.Data
                     Email = "admin@fashionecommerce.com",
                     PasswordHash = "hashed_password_here", // In real app, this should be properly hashed
                     PhoneNumber = "0123456789",
-                    Country = "Vietnam",
-                    Role = UserRole.Admin,
+                    RoleId = 1,
                     IsActive = true
                 }
             );

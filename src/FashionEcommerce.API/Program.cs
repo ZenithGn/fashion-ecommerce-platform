@@ -9,15 +9,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add DbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=(localdb)\\mssqllocaldb;Database=FashionEcommerce;Trusted_Connection=true;";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 
 builder.Services.AddDbContext<FashionEcommerceDbContext>(options =>
-    options.UseSqlServer(connectionString,
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.MigrationsAssembly("FashionEcommerce.Data");
-        }));
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.MigrationsAssembly("FashionEcommerce.Data");
+    }));
 
 // Add CORS
 builder.Services.AddCors(options =>

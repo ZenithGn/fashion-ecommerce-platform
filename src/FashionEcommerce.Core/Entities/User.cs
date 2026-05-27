@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations;
 namespace FashionEcommerce.Core.Entities
 {
     /// <summary>
-    /// User entity - represents customers and admins
+    /// User entity - represents customers, staff and admins.
     /// </summary>
     public class User : BaseEntity
     {
+        public int RoleId { get; set; } = 2;
+
         [Required]
         [StringLength(100)]
         public string FirstName { get; set; } = string.Empty;
@@ -27,39 +29,15 @@ namespace FashionEcommerce.Core.Entities
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
 
-        [StringLength(500)]
-        public string? Address { get; set; }
-
-        [StringLength(100)]
-        public string? City { get; set; }
-
-        [StringLength(100)]
-        public string? State { get; set; }
-
-        [StringLength(20)]
-        public string? PostalCode { get; set; }
-
-        [StringLength(100)]
-        public string? Country { get; set; }
-
-        public UserRole Role { get; set; } = UserRole.Customer;
-
         public bool IsActive { get; set; } = true;
 
+        public DateTime? EmailVerifiedAt { get; set; }
         public DateTime? LastLoginAt { get; set; }
 
         // Navigation properties
+        public virtual Role Role { get; set; } = null!;
+        public virtual ICollection<UserAddress> Addresses { get; set; } = new List<UserAddress>();
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual Cart? Cart { get; set; }
-    }
-
-    /// <summary>
-    /// User role enumeration
-    /// </summary>
-    public enum UserRole
-    {
-        Customer = 0,
-        Admin = 1,
-        Staff = 2
     }
 }
