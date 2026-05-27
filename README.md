@@ -1,43 +1,34 @@
-## Cấu hình database local
+## README
 
-Project sử dụng PostgreSQL trên Neon. Để chạy backend ở máy cá nhân, mỗi thành viên cần tạo file cấu hình riêng:
+Project này là backend .NET 8 cho fashion e-commerce, hiện chạy với PostgreSQL trên Neon.
 
-```text
-src/FashionEcommerce.API/appsettings.Development.json
-Nội dung file:
+### Chạy local
 
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=YOUR_NEON_HOST;Port=5432;Database=YOUR_DATABASE_NAME;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
-  }
-}
-Thay các giá trị sau bằng thông tin lấy từ Neon Console:
-
-YOUR_NEON_HOST
-YOUR_DATABASE_NAME
-YOUR_USERNAME
-YOUR_PASSWORD
-Ví dụ:
-
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=ep-example.ap-southeast-1.aws.neon.tech;Port=5432;Database=neondb;Username=neondb_owner;Password=your_password;SSL Mode=Require;Trust Server Certificate=true"
-  }
-}
-Lưu ý: không commit file appsettings.Development.json lên GitHub vì file này chứa thông tin kết nối database.
-
-Sau khi tạo file cấu hình, chạy backend bằng lệnh:
-
+```bash
 dotnet restore
 dotnet build
 dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
-Nếu cần cập nhật database theo migration mới nhất:
+```
 
-dotnet ef database update \
-  --project src/FashionEcommerce.Data/FashionEcommerce.Data.csproj \
-  --startup-project src/FashionEcommerce.API/FashionEcommerce.API.csproj
+### Cấu hình DB
 
-Nhớ thêm dòng này vào `.gitignore`:
+`src/FashionEcommerce.API/appsettings.json` đã có connection string Neon. Nếu muốn dùng DB riêng, tạo `src/FashionEcommerce.API/appsettings.Development.json`:
 
-```gitignore
-src/FashionEcommerce.API/appsettings.Development.json
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=YOUR_NEON_HOST;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
+  }
+}
+```
+
+### API auth
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/request-password-reset`
+- `POST /api/auth/reset-password`
+
+### Swagger
+
+`https://localhost:5001/swagger`

@@ -71,6 +71,7 @@ namespace FashionEcommerce.Data
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PasswordResetToken).HasMaxLength(255);
                 entity.Property(e => e.RoleId).HasDefaultValue(2);
 
                 entity.HasOne(e => e.Role)

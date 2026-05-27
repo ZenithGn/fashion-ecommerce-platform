@@ -258,7 +258,7 @@ public abstract class BaseEntity
 
 - Project file
 - Target framework: .NET 8.0
-- NuGet packages: Entity Framework Core 8.0, SQL Server provider
+- NuGet packages: Entity Framework Core 8.0, Npgsql PostgreSQL provider
 
 #### FashionEcommerceDbContext.cs (NEW)
 
@@ -393,7 +393,7 @@ public abstract class BaseEntity
 - **.NET Framework**: .NET 8.0
 - **Web Framework**: ASP.NET Core 8.0
 - **ORM**: Entity Framework Core 8.0
-- **Database**: SQL Server
+- **Database**: PostgreSQL / Neon
 - **API Documentation**: Swagger 6.4.6
 - **Language**: C# 12.0
 - **Package Manager**: NuGet
@@ -412,7 +412,7 @@ public abstract class BaseEntity
 
 ### Short Term (Phase 3)
 
-- [ ] Authentication (JWT)
+- [x] Authentication (JWT)
 - [ ] Authorization (Role-based)
 - [ ] Unit tests
 - [ ] Integration tests
