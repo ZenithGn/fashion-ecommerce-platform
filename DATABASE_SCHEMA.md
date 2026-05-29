@@ -11,6 +11,8 @@
 │ lastName                            │
 │ email (UNIQUE)                      │
 │ passwordHash                        │
+│ passwordResetToken                  │
+│ passwordResetTokenExpiry            │
 │ phoneNumber                         │
 │ address                             │
 │ city                                │
@@ -127,25 +129,27 @@
 
 ### USERS Table
 
-| Column       | Type          | Constraints           | Notes                        |
-| ------------ | ------------- | --------------------- | ---------------------------- |
-| id           | INT           | PK, Auto-increment    | Primary Key                  |
-| firstName    | NVARCHAR(100) | NOT NULL              | User's first name            |
-| lastName     | NVARCHAR(100) | NOT NULL              | User's last name             |
-| email        | NVARCHAR(255) | NOT NULL, UNIQUE      | Email address                |
-| passwordHash | NVARCHAR(255) | NOT NULL              | Hashed password              |
-| phoneNumber  | NVARCHAR(20)  | Nullable              | Phone number                 |
-| address      | NVARCHAR(500) | Nullable              | Street address               |
-| city         | NVARCHAR(100) | Nullable              | City                         |
-| state        | NVARCHAR(100) | Nullable              | State/Province               |
-| postalCode   | NVARCHAR(20)  | Nullable              | Postal code                  |
-| country      | NVARCHAR(100) | Nullable              | Country                      |
-| role         | INT           | Default: 0            | 0=Customer, 1=Admin, 2=Staff |
-| isActive     | BIT           | Default: 1            | Account status               |
-| lastLoginAt  | DATETIME2     | Nullable              | Last login timestamp         |
-| createdAt    | DATETIME2     | Default: GETUTCDATE() | Record creation time         |
-| updatedAt    | DATETIME2     | Nullable              | Last update time             |
-| isDeleted    | BIT           | Default: 0            | Soft delete flag             |
+| Column                   | Type          | Constraints           | Notes                        |
+| ------------------------ | ------------- | --------------------- | ---------------------------- |
+| id                       | INT           | PK, Auto-increment    | Primary Key                  |
+| firstName                | NVARCHAR(100) | NOT NULL              | User's first name            |
+| lastName                 | NVARCHAR(100) | NOT NULL              | User's last name             |
+| email                    | NVARCHAR(255) | NOT NULL, UNIQUE      | Email address                |
+| passwordHash             | NVARCHAR(255) | NOT NULL              | Hashed password              |
+| passwordResetToken       | NVARCHAR(255) | Nullable              | Reset token                  |
+| passwordResetTokenExpiry | DATETIME2     | Nullable              | Reset token expiry           |
+| phoneNumber              | NVARCHAR(20)  | Nullable              | Phone number                 |
+| address                  | NVARCHAR(500) | Nullable              | Street address               |
+| city                     | NVARCHAR(100) | Nullable              | City                         |
+| state                    | NVARCHAR(100) | Nullable              | State/Province               |
+| postalCode               | NVARCHAR(20)  | Nullable              | Postal code                  |
+| country                  | NVARCHAR(100) | Nullable              | Country                      |
+| role                     | INT           | Default: 0            | 0=Customer, 1=Admin, 2=Staff |
+| isActive                 | BIT           | Default: 1            | Account status               |
+| lastLoginAt              | DATETIME2     | Nullable              | Last login timestamp         |
+| createdAt                | DATETIME2     | Default: GETUTCDATE() | Record creation time         |
+| updatedAt                | DATETIME2     | Nullable              | Last update time             |
+| isDeleted                | BIT           | Default: 0            | Soft delete flag             |
 
 **Indexes:**
 
@@ -431,6 +435,11 @@ WHERE c.userId = @userId AND ci.isDeleted = 0
 ```
 
 ---
+
+## 🔐 Authentication Support
+
+- JWT register/login flow
+- Password reset token flow
 
 **Document Version:** 1.0  
 **Last Updated:** 2026-05-26
