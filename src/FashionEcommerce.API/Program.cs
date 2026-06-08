@@ -69,11 +69,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Migrate database on startup
-using (var scope = app.Services.CreateScope())
+// Migrate database on startup (skip during testing)
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var db = scope.ServiceProvider.GetRequiredService<FashionEcommerceDbContext>();
-    db.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<FashionEcommerceDbContext>();
+        db.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.

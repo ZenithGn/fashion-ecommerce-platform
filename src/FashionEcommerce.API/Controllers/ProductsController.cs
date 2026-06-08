@@ -22,15 +22,74 @@ namespace FashionEcommerce.API.Controllers
         /// Get all products
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        public async Task<ActionResult> GetAllProducts([FromQuery] int page = 1, [FromQuery] int pageSize = 20,
+            [FromQuery] int? categoryId = null, [FromQuery] decimal? minPrice = null, [FromQuery] decimal? maxPrice = null,
+            [FromQuery] string? size = null, [FromQuery] string? color = null, [FromQuery] string? sort = null)
         {
             try
             {
-                var products = await _context.Products
-                    .Where(p => !p.IsDeleted && p.IsActive)
-                    .Include(p => p.Category)
+                if (page <= 0) page = 1;
+                if (pageSize <= 0 || pageSize > 100) pageSize = 20;
+
+                // Base query
+                var query = _context.Products
+                    .Where(p => !p.IsDeleted && p.IsActive);
+
+                if (categoryId.HasValue)
+                    query = query.Where(p => p.CategoryId == categoryId.Value);
+
+                if (minPrice.HasValue)
+                    query = query.Where(p => p.Price >= minPrice.Value);
+                if (maxPrice.HasValue)
+                    query = query.Where(p => p.Price <= maxPrice.Value);
+
+                if (!string.IsNullOrWhiteSpace(size))
+                    query = query.Where(p => p.Size == size || p.Variants.Any(v => v.Size == size));
+                if (!string.IsNullOrWhiteSpace(color))
+                    query = query.Where(p => p.Color == color || p.Variants.Any(v => v.Color == color));
+
+                // Sorting
+                query = sort switch
+                {
+                    "price_asc" => query.OrderBy(p => p.Price),
+                    "price_desc" => query.OrderByDescending(p => p.Price),
+                    "newest" => query.OrderByDescending(p => p.CreatedAt),
+                    _ => query.OrderBy(p => p.Name),
+                };
+
+                var totalItems = await query.CountAsync();
+
+                var items = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(p => new ProductListDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        BasePrice = p.Price,
+                        Price = p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault(),
+                        Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
+                        ThumbnailUrl = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault(),
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0,
+                        VariantsSummary = p.Variants.Select(v => new VariantSummaryDto { Id = v.Id, SKU = v.SKU, Color = v.Color, Size = v.Size, PriceOverride = v.PriceOverride }).ToList()
+                    })
                     .ToListAsync();
-                return Ok(products);
+
+                var result = new PagedResult<ProductListDto>
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalItems = totalItems,
+                    Items = items
+                };
+
+                // Simple ETag based on last modified data
+                var etag = $"\"{result.TotalItems}-{result.Page}-{result.PageSize}\"";
+                if (Request.Headers.TryGetValue("If-None-Match", out var clientEtag) && clientEtag == etag)
+                    return StatusCode(304);
+
+                Response.Headers["ETag"] = etag;
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -43,13 +102,32 @@ namespace FashionEcommerce.API.Controllers
         /// Get product by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(int id)
+        public async Task<ActionResult> GetProductById(int id)
         {
             try
             {
                 var product = await _context.Products
                     .Where(p => p.Id == id && !p.IsDeleted)
-                    .Include(p => p.Category)
+                    .Select(p => new ProductDetailDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Description = p.Description,
+                        BasePrice = p.Price,
+                        DiscountPrice = p.DiscountPrice,
+                        Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
+                        Images = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => new ImageDto { Id = i.Id, Url = i.ImageUrl, IsThumbnail = i.IsThumbnail }).ToList(),
+                        Variants = p.Variants.Select(v => new VariantDetailDto
+                        {
+                            Id = v.Id,
+                            SKU = v.SKU,
+                            Color = v.Color,
+                            Size = v.Size,
+                            PriceOverride = v.PriceOverride,
+                            Price = v.PriceOverride ?? p.Price
+                        }).ToList(),
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                    })
                     .FirstOrDefaultAsync();
 
                 if (product == null)
