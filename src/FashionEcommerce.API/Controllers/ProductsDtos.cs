@@ -38,6 +38,18 @@ namespace FashionEcommerce.API.Controllers
         public List<T> Items { get; set; } = new List<T>();
     }
 
+    public class ProductSearchDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public decimal BasePrice { get; set; }
+        public decimal Price { get; set; }
+        public CategoryDto? Category { get; set; }
+        public string? ThumbnailUrl { get; set; }
+        public int AvailableQuantity { get; set; }
+    }
+
     public class ProductDetailDto
     {
         public int Id { get; set; }

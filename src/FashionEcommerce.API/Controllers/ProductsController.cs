@@ -171,20 +171,48 @@ namespace FashionEcommerce.API.Controllers
         /// Search products by name or description
         /// </summary>
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Product>>> SearchProducts([FromQuery] string searchTerm)
+        public async Task<ActionResult> SearchProducts([FromQuery] string searchTerm, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchTerm))
                     return BadRequest("Search term cannot be empty");
 
-                var products = await _context.Products
+                if (page <= 0) page = 1;
+                if (pageSize <= 0 || pageSize > 100) pageSize = 20;
+
+                var baseQuery = _context.Products
                     .Where(p => (p.Name.Contains(searchTerm) || p.Description!.Contains(searchTerm))
-                              && !p.IsDeleted && p.IsActive)
-                    .Include(p => p.Category)
+                              && !p.IsDeleted && p.IsActive);
+
+                var total = await baseQuery.CountAsync();
+
+                var items = await baseQuery
+                    .OrderBy(p => p.Name)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(p => new ProductSearchDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Description = p.Description,
+                        BasePrice = p.Price,
+                        Price = p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault(),
+                        Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
+                        ThumbnailUrl = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault(),
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                    })
                     .ToListAsync();
 
-                return Ok(products);
+                var result = new PagedResult<ProductSearchDto>
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalItems = total,
+                    Items = items
+                };
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
