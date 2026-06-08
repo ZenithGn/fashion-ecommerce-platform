@@ -15,6 +15,70 @@ namespace FashionEcommerce.API.Tests
         }
 
         [Fact]
+        public async Task CreateProduct_Success_With_Variants_And_Images()
+        {
+            var client = _factory.CreateClient();
+            var dto = new CreateProductDto
+            {
+                Name = "New Product",
+                BasePrice = 123m,
+                CategoryId = 1,
+                Variants = new System.Collections.Generic.List<CreateProductVariantDto>
+                {
+                    new CreateProductVariantDto { SKU = "NEW-1", Size = "M" }
+                },
+                Images = new System.Collections.Generic.List<CreateProductImageDto>
+                {
+                    new CreateProductImageDto { ImageUrl = "http://example.com/new.jpg", IsThumbnail = true }
+                }
+            };
+
+            var resp = await client.PostAsJsonAsync("/api/products", dto);
+            resp.StatusCode.Should().Be(HttpStatusCode.Created);
+
+            var created = await resp.Content.ReadFromJsonAsync<ProductDetailDto>();
+            created.Should().NotBeNull();
+            created!.Name.Should().Be("New Product");
+            created.Variants.Should().HaveCount(1);
+            created.Images.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public async Task CreateProduct_InvalidCategory_Returns_BadRequest()
+        {
+            var client = _factory.CreateClient();
+            var dto = new CreateProductDto
+            {
+                Name = "Bad Cat",
+                BasePrice = 10m,
+                CategoryId = 9999
+            };
+
+            var resp = await client.PostAsJsonAsync("/api/products", dto);
+            resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreateProduct_DuplicateSKUInPayload_Returns_Conflict()
+        {
+            var client = _factory.CreateClient();
+            var dto = new CreateProductDto
+            {
+                Name = "Dup SKU",
+                BasePrice = 10m,
+                CategoryId = 1,
+                Variants = new System.Collections.Generic.List<CreateProductVariantDto>
+                {
+                    new CreateProductVariantDto { SKU = "DUP-1" },
+                    new CreateProductVariantDto { SKU = "DUP-1" }
+                }
+            };
+
+            var resp = await client.PostAsJsonAsync("/api/products", dto);
+            resp.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        }
+
+        [Fact]
         public async Task GetProductById_Returns_ProductDetail_Success()
         {
             var client = _factory.CreateClient();

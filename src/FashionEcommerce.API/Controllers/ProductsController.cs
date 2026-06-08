@@ -225,18 +225,102 @@ namespace FashionEcommerce.API.Controllers
         /// Create a new product
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
+        public async Task<ActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
             try
             {
-                if (product == null)
+                if (dto == null)
                     return BadRequest("Product cannot be null");
 
+                // Basic validation
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                    return BadRequest("Name is required");
+                if (dto.BasePrice <= 0)
+                    return BadRequest("BasePrice must be greater than 0");
+
+                // Verify category exists
+                var categoryExists = await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId && !c.IsDeleted);
+                if (!categoryExists)
+                    return BadRequest("CategoryId is invalid");
+
+                // Check duplicate SKUs in payload
+                var skusInPayload = dto.Variants?.Where(v => !string.IsNullOrWhiteSpace(v.SKU)).Select(v => v.SKU!).ToList() ?? new List<string>();
+                var duplicateInPayload = skusInPayload.GroupBy(s => s).Where(g => g.Count() > 1).Select(g => g.Key).FirstOrDefault();
+                if (duplicateInPayload != null)
+                    return Conflict($"Duplicate SKU in request payload: {duplicateInPayload}");
+
+                // Check SKU conflicts against DB
+                if (skusInPayload.Any())
+                {
+                    var conflict = await _context.ProductVariants.AnyAsync(v => skusInPayload.Contains(v.SKU));
+                    if (conflict)
+                        return Conflict("One or more SKUs already exist");
+                }
+
+                // Map DTO to entity
+                var product = new Product
+                {
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    Price = dto.BasePrice,
+                    DiscountPrice = dto.DiscountPrice,
+                    CategoryId = dto.CategoryId,
+                    SKU = dto.SKU,
+                    Brand = dto.Brand,
+                    Color = dto.Color,
+                    Size = dto.Size,
+                    Material = dto.Material,
+                    ImageUrl = dto.ImageUrl,
+                    IsActive = dto.IsActive ?? true,
+                };
+
+                if (dto.Images != null)
+                {
+                    foreach (var img in dto.Images)
+                    {
+                        product.Images.Add(new ProductImage { ImageUrl = img.ImageUrl, IsThumbnail = img.IsThumbnail });
+                    }
+                }
+
+                if (dto.Variants != null)
+                {
+                    foreach (var v in dto.Variants)
+                    {
+                        product.Variants.Add(new ProductVariant { SKU = v.SKU, Color = v.Color, Size = v.Size, PriceOverride = v.PriceOverride });
+                    }
+                }
+
                 product.CreatedAt = DateTime.UtcNow;
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+                // Return created product detail
+                var created = await _context.Products
+                    .Where(p => p.Id == product.Id)
+                    .Select(p => new ProductDetailDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Description = p.Description,
+                        BasePrice = p.Price,
+                        DiscountPrice = p.DiscountPrice,
+                        Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
+                        Images = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => new ImageDto { Id = i.Id, Url = i.ImageUrl, IsThumbnail = i.IsThumbnail }).ToList(),
+                        Variants = p.Variants.Select(v => new VariantDetailDto
+                        {
+                            Id = v.Id,
+                            SKU = v.SKU,
+                            Color = v.Color,
+                            Size = v.Size,
+                            PriceOverride = v.PriceOverride,
+                            Price = v.PriceOverride ?? p.Price
+                        }).ToList(),
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                    })
+                    .FirstOrDefaultAsync();
+
+                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, created);
             }
             catch (Exception ex)
             {
