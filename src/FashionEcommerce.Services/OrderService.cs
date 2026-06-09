@@ -1,0 +1,236 @@
+using FashionEcommerce.Core.Entities;
+using FashionEcommerce.Data;
+using FashionEcommerce.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FashionEcommerce.Services
+{
+    public class OrderService : IOrderService
+    {
+        private readonly FashionEcommerceDbContext _context;
+
+        public OrderService(FashionEcommerceDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Order?> GetOrderByIdAsync(int orderId)
+        {
+            return await _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == orderId && !o.IsDeleted);
+        }
+
+        public async Task<Order?> GetOrderByNumberAsync(string orderNumber)
+        {
+            return await _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber && !o.IsDeleted);
+        }
+
+        public async Task<IEnumerable<Order>> GetUserOrdersAsync(int userId)
+        {
+            return await _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
+                .Where(o => o.UserId == userId && !o.IsDeleted)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.User)
+                .Where(o => !o.IsDeleted)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<Order> CreateOrderAsync(Order order)
+        {
+            if (order.UserId <= 0)
+            {
+                throw new ArgumentException("UserId is invalid.");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Fetch user's cart and items
+                var cart = await _context.Carts
+                    .Include(c => c.Items)
+                    .ThenInclude(ci => ci.Product)
+                    .FirstOrDefaultAsync(c => c.UserId == order.UserId && !c.IsDeleted);
+
+                if (cart == null || !cart.Items.Any())
+                {
+                    throw new InvalidOperationException("Giỏ hàng trống hoặc không tồn tại.");
+                }
+
+                // Initialize order details
+                order.Items = new List<OrderItem>();
+                decimal calculatedSubTotal = 0m;
+
+                // 2. Process each item in the cart
+                foreach (var cartItem in cart.Items)
+                {
+                    // Check inventory stock
+                    var inventory = await _context.Inventories
+                        .FirstOrDefaultAsync(i => i.ProductId == cartItem.ProductId && !i.IsDeleted);
+
+                    if (inventory == null)
+                    {
+                        throw new InvalidOperationException($"Không tìm thấy thông tin kho của sản phẩm: '{cartItem.Product?.Name ?? cartItem.ProductId.ToString()}'.");
+                    }
+
+                    int availableStock = inventory.Quantity - inventory.ReservedQuantity;
+                    if (availableStock < cartItem.Quantity)
+                    {
+                        throw new InvalidOperationException($"Sản phẩm '{cartItem.Product?.Name ?? cartItem.ProductId.ToString()}' không đủ hàng tồn kho. Yêu cầu: {cartItem.Quantity}, Còn lại: {availableStock}");
+                    }
+
+                    // Reserve inventory stock
+                    inventory.ReservedQuantity += cartItem.Quantity;
+                    _context.Inventories.Update(inventory);
+
+                    // Create OrderItem
+                    var orderItem = new OrderItem
+                    {
+                        ProductId = cartItem.ProductId,
+                        Quantity = cartItem.Quantity,
+                        UnitPrice = cartItem.UnitPrice,
+                        TotalPrice = cartItem.TotalPrice,
+                        Size = cartItem.Product?.Size,
+                        Color = cartItem.Product?.Color,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    order.Items.Add(orderItem);
+
+                    calculatedSubTotal += cartItem.TotalPrice;
+                }
+
+                // 3. Finalize order totals
+                order.SubTotal = calculatedSubTotal;
+                order.TotalPrice = order.SubTotal + order.ShippingCost + order.TaxAmount - order.DiscountAmount;
+                order.OrderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{new Random().Next(100000, 999999)}";
+                order.Status = OrderStatus.Pending;
+                order.CreatedAt = DateTime.UtcNow;
+
+                // 4. Save order to database
+                _context.Orders.Add(order);
+
+                // 5. Clear items from user's cart
+                _context.CartItems.RemoveRange(cart.Items);
+                cart.TotalPrice = 0m;
+                cart.ItemCount = 0;
+                cart.UpdatedAt = DateTime.UtcNow;
+                _context.Carts.Update(cart);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return order;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == orderId && !o.IsDeleted);
+
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Không tìm thấy đơn hàng.");
+            }
+
+            var previousStatus = order.Status;
+            if (previousStatus == status)
+            {
+                return order;
+            }
+
+            // Inventory lifecycle logic
+            // 1. Release reserved stock if order is Cancelled
+            if (status == OrderStatus.Cancelled && previousStatus != OrderStatus.Cancelled && previousStatus < OrderStatus.Shipped)
+            {
+                foreach (var item in order.Items)
+                {
+                    var inventory = await _context.Inventories
+                        .FirstOrDefaultAsync(i => i.ProductId == item.ProductId && !i.IsDeleted);
+
+                    if (inventory != null)
+                    {
+                        inventory.ReservedQuantity = Math.Max(0, inventory.ReservedQuantity - item.Quantity);
+                        _context.Inventories.Update(inventory);
+                    }
+                }
+            }
+            // 2. Reduce physical stock when Shipped or Delivered (moving out of Pending/Processing)
+            else if ((status == OrderStatus.Shipped || status == OrderStatus.Delivered) && previousStatus <= OrderStatus.Processing)
+            {
+                foreach (var item in order.Items)
+                {
+                    var inventory = await _context.Inventories
+                        .FirstOrDefaultAsync(i => i.ProductId == item.ProductId && !i.IsDeleted);
+
+                    if (inventory != null)
+                    {
+                        inventory.Quantity = Math.Max(0, inventory.Quantity - item.Quantity);
+                        inventory.ReservedQuantity = Math.Max(0, inventory.ReservedQuantity - item.Quantity);
+                        _context.Inventories.Update(inventory);
+                    }
+                }
+            }
+
+            order.Status = status;
+            order.UpdatedAt = DateTime.UtcNow;
+            if (status == OrderStatus.Shipped)
+            {
+                order.ShippedDate = DateTime.UtcNow;
+            }
+            else if (status == OrderStatus.Delivered)
+            {
+                order.DeliveredDate = DateTime.UtcNow;
+            }
+
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<bool> CancelOrderAsync(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null || order.IsDeleted)
+            {
+                return false;
+            }
+
+            if (order.Status >= OrderStatus.Shipped)
+            {
+                throw new InvalidOperationException("Không thể hủy đơn hàng đã giao hoặc đã gửi đi.");
+            }
+
+            await UpdateOrderStatusAsync(orderId, OrderStatus.Cancelled);
+            return true;
+        }
+    }
+}
