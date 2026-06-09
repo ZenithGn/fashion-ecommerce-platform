@@ -94,3 +94,6 @@ app.MapControllers();
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();
+
+// Đảm bảo class Program là public để WebApplicationFactory trong Test Project có thể truy cập
+public partial class Program { }

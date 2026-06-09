@@ -2,6 +2,7 @@ using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
+using FashionEcommerce.API.Controllers;
 
 namespace FashionEcommerce.API.Tests
 {

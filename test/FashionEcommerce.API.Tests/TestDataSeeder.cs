@@ -1,4 +1,5 @@
 using FashionEcommerce.Core.Entities;
+using FashionEcommerce.Data;
 
 namespace FashionEcommerce.API.Tests
 {
@@ -7,10 +8,15 @@ namespace FashionEcommerce.API.Tests
         public static void Seed(FashionEcommerceDbContext db)
         {
             // Clear existing
-            if (db.Categories.Any()) return;
+            if (db.Products.Any(p => p.Id == 100)) return;
 
-            var cat = new Category { Id = 1, Name = "TestCat", IsActive = true };
-            db.Categories.Add(cat);
+            var cat = db.Categories.Find(1);
+            if (cat == null)
+            {
+                cat = new Category { Id = 1, Name = "TestCat", IsActive = true };
+                db.Categories.Add(cat);
+                db.SaveChanges();
+            }
 
             var p1 = new Product
             {

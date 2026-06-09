@@ -70,7 +70,7 @@ namespace FashionEcommerce.API.Controllers
                         Price = p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault(),
                         Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
                         ThumbnailUrl = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault(),
-                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0,
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)(i.Quantity - i.ReservedQuantity)) ?? 0,
                         VariantsSummary = p.Variants.Select(v => new VariantSummaryDto { Id = v.Id, SKU = v.SKU, Color = v.Color, Size = v.Size, PriceOverride = v.PriceOverride }).ToList()
                     })
                     .ToListAsync();
@@ -126,7 +126,7 @@ namespace FashionEcommerce.API.Controllers
                             PriceOverride = v.PriceOverride,
                             Price = v.PriceOverride ?? p.Price
                         }).ToList(),
-                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)(i.Quantity - i.ReservedQuantity)) ?? 0
                     })
                     .FirstOrDefaultAsync();
 
@@ -200,7 +200,7 @@ namespace FashionEcommerce.API.Controllers
                         Price = p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault(),
                         Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
                         ThumbnailUrl = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault(),
-                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)(i.Quantity - i.ReservedQuantity)) ?? 0
                     })
                     .ToListAsync();
 
@@ -316,7 +316,7 @@ namespace FashionEcommerce.API.Controllers
                             PriceOverride = v.PriceOverride,
                             Price = v.PriceOverride ?? p.Price
                         }).ToList(),
-                        AvailableQuantity = p.Inventories.Sum(i => (int?)i.AvailableQuantity) ?? 0
+                        AvailableQuantity = p.Inventories.Sum(i => (int?)(i.Quantity - i.ReservedQuantity)) ?? 0
                     })
                     .FirstOrDefaultAsync();
 

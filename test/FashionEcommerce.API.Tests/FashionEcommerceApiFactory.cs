@@ -8,6 +8,8 @@ namespace FashionEcommerce.API.Tests
 {
     public class FashionEcommerceApiFactory : WebApplicationFactory<Program>
     {
+        private readonly string _dbName = $"FashionEcommerceTestDb_{Guid.NewGuid()}";
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Testing");
@@ -21,7 +23,7 @@ namespace FashionEcommerce.API.Tests
                 // Add in-memory database for tests
                 services.AddDbContext<FashionEcommerceDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("FashionEcommerceTestDb");
+                    options.UseInMemoryDatabase(_dbName);
                 });
 
                 // Build the service provider and seed data
