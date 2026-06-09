@@ -1,6 +1,7 @@
 using FashionEcommerce.Data;
 using FashionEcommerce.API.Models.Email;
 using FashionEcommerce.API.Services.Email;
+using FashionEcommerce.Services;
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +14,11 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(c =>
@@ -59,6 +64,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");

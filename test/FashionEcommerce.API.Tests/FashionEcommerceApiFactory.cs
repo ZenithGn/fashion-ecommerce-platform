@@ -23,7 +23,8 @@ namespace FashionEcommerce.API.Tests
                 // Add in-memory database for tests
                 services.AddDbContext<FashionEcommerceDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(_dbName);
+                    options.UseInMemoryDatabase(_dbName)
+                           .ConfigureWarnings(x => x.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.InMemoryEventId.TransactionIgnoredWarning));
                 });
 
                 // Build the service provider and seed data
