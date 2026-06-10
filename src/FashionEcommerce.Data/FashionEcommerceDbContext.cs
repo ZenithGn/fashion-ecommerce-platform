@@ -21,6 +21,8 @@ namespace FashionEcommerce.Data
         public DbSet<UserAddress> UserAddresses { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<ProductVariant> ProductVariants { get; set; } = null!;
+        public DbSet<ProductImage> ProductImages { get; set; } = null!;
         public DbSet<Inventory> Inventories { get; set; } = null!;
         public DbSet<Cart> Carts { get; set; } = null!;
         public DbSet<CartItem> CartItems { get; set; } = null!;
@@ -71,6 +73,7 @@ namespace FashionEcommerce.Data
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PasswordResetToken).HasMaxLength(255);
                 entity.Property(e => e.RoleId).HasDefaultValue(2);
 
                 entity.HasOne(e => e.Role)
@@ -133,6 +136,31 @@ namespace FashionEcommerce.Data
                     .WithOne(i => i.Product)
                     .HasForeignKey(i => i.ProductId)
                     .OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(e => e.Variants)
+                    .WithOne(v => v.Product)
+                    .HasForeignKey(v => v.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.Images)
+                    .WithOne(img => img.Product)
+                    .HasForeignKey(img => img.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure ProductVariant
+            modelBuilder.Entity<ProductVariant>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.SKU).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.PriceOverride).HasColumnType("decimal(10,2)");
+                entity.HasIndex(e => e.SKU).IsUnique();
+            });
+
+            // Configure ProductImage
+            modelBuilder.Entity<ProductImage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ImageUrl).IsRequired();
             });
 
             // Configure Inventory entity

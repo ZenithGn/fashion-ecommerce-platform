@@ -3,6 +3,7 @@ using System;
 using FashionEcommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FashionEcommerce.Data.Migrations
 {
     [DbContext(typeof(FashionEcommerceDbContext))]
-    partial class FashionEcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260527054837_AddPasswordResetTokens")]
+    partial class AddPasswordResetTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1153),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3315),
                             IsDeleted = false,
                             ItemCount = 0,
                             TotalPrice = 0m,
@@ -154,7 +157,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1064),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3214),
                             Description = "Thời trang nam",
                             IsActive = true,
                             IsDeleted = false,
@@ -163,7 +166,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1067),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3218),
                             Description = "Thời trang nữ",
                             IsActive = true,
                             IsDeleted = false,
@@ -172,7 +175,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1068),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3219),
                             Description = "Quần áo trẻ em",
                             IsActive = true,
                             IsDeleted = false,
@@ -231,7 +234,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1133),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3294),
                             IsDeleted = false,
                             Location = "Kho chính - Tầng 1",
                             ProductId = 1,
@@ -242,7 +245,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1137),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3297),
                             IsDeleted = false,
                             Location = "Kho chính - Tầng 2",
                             ProductId = 2,
@@ -253,7 +256,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1139),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3298),
                             IsDeleted = false,
                             Location = "Kho chính - Tầng 1",
                             ProductId = 3,
@@ -440,7 +443,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 1,
                             ActionName = "products.view",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1002),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3123),
                             Description = "View products",
                             IsDeleted = false
                         },
@@ -448,7 +451,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 2,
                             ActionName = "products.manage",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1004),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3125),
                             Description = "Create, update and delete products",
                             IsDeleted = false
                         },
@@ -456,7 +459,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 3,
                             ActionName = "orders.view",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1005),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3126),
                             Description = "View orders",
                             IsDeleted = false
                         },
@@ -464,7 +467,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 4,
                             ActionName = "orders.manage",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1006),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3127),
                             Description = "Manage orders",
                             IsDeleted = false
                         },
@@ -472,7 +475,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 5,
                             ActionName = "users.manage",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1007),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3128),
                             Description = "Manage users and staff",
                             IsDeleted = false
                         },
@@ -480,7 +483,7 @@ namespace FashionEcommerce.Data.Migrations
                         {
                             Id = 6,
                             ActionName = "reports.view",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1008),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3129),
                             Description = "View reports",
                             IsDeleted = false
                         });
@@ -569,7 +572,7 @@ namespace FashionEcommerce.Data.Migrations
                             Brand = "FashionStore",
                             CategoryId = 1,
                             Color = "Trắng",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1106),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3266),
                             Description = "Áo thun thoáng mát, chất liệu cotton 100%",
                             IsActive = true,
                             IsDeleted = false,
@@ -587,7 +590,7 @@ namespace FashionEcommerce.Data.Migrations
                             Brand = "FashionStore",
                             CategoryId = 2,
                             Color = "Xanh",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1114),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3275),
                             Description = "Áo sơ mi dài tay phù hợp công sở",
                             IsActive = true,
                             IsDeleted = false,
@@ -605,7 +608,7 @@ namespace FashionEcommerce.Data.Migrations
                             Brand = "FashionStore",
                             CategoryId = 1,
                             Color = "Xanh đậm",
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1117),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3278),
                             Description = "Quần jeans bền, thoải mái",
                             IsActive = true,
                             IsDeleted = false,
@@ -617,86 +620,6 @@ namespace FashionEcommerce.Data.Migrations
                             SKU = "QJN001",
                             Size = "32"
                         });
-                });
-
-            modelBuilder.Entity("FashionEcommerce.Core.Entities.ProductImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsThumbnail")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("FashionEcommerce.Core.Entities.ProductVariant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<decimal?>("PriceOverride")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SKU")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Size")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SKU")
-                        .IsUnique();
-
-                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("FashionEcommerce.Core.Entities.Role", b =>
@@ -735,7 +658,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(903),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(2972),
                             Description = "System administrator",
                             IsDeleted = false,
                             RoleName = "Admin"
@@ -743,7 +666,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(906),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(2978),
                             Description = "Customer account",
                             IsDeleted = false,
                             RoleName = "Customer"
@@ -751,7 +674,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(908),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(2979),
                             Description = "Store staff account",
                             IsDeleted = false,
                             RoleName = "Staff"
@@ -900,7 +823,7 @@ namespace FashionEcommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1087),
+                            CreatedAt = new DateTime(2026, 5, 27, 5, 48, 34, 47, DateTimeKind.Utc).AddTicks(3244),
                             Email = "admin@fashionecommerce.com",
                             FirstName = "Admin",
                             IsActive = true,
@@ -1061,28 +984,6 @@ namespace FashionEcommerce.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("FashionEcommerce.Core.Entities.ProductImage", b =>
-                {
-                    b.HasOne("FashionEcommerce.Core.Entities.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("FashionEcommerce.Core.Entities.ProductVariant", b =>
-                {
-                    b.HasOne("FashionEcommerce.Core.Entities.Product", "Product")
-                        .WithMany("Variants")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("FashionEcommerce.Core.Entities.RolePermission", b =>
                 {
                     b.HasOne("FashionEcommerce.Core.Entities.Permission", "Permission")
@@ -1150,13 +1051,9 @@ namespace FashionEcommerce.Data.Migrations
                 {
                     b.Navigation("CartItems");
 
-                    b.Navigation("Images");
-
                     b.Navigation("Inventories");
 
                     b.Navigation("OrderItems");
-
-                    b.Navigation("Variants");
                 });
 
             modelBuilder.Entity("FashionEcommerce.Core.Entities.Role", b =>

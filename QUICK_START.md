@@ -38,33 +38,28 @@ dotnet restore
 
 ### 2️⃣ Cấu Hình Cơ Sở Dữ Liệu
 
-Chỉnh sửa file `src/FashionEcommerce.API/appsettings.json`:
+Project hiện đang dùng PostgreSQL trên Neon. File `src/FashionEcommerce.API/appsettings.json` đã trỏ sẵn tới Neon, nên để chạy local chỉ cần giữ cấu hình hiện có hoặc thay bằng connection string Neon của bạn:
 
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=YOUR_SERVER;Database=FashionEcommerce;Trusted_Connection=true;"
+    "DefaultConnection": "Host=YOUR_NEON_HOST;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true;"
 }
 ```
 
 ### 3️⃣ Tạo Database
 
 ```bash
-cd src/FashionEcommerce.Data
+dotnet restore
+dotnet build
 
-# Tạo migration đầu tiên
-dotnet ef migrations add InitialCreate -s ../FashionEcommerce.API
-
-# Cập nhật database
-dotnet ef database update -s ../FashionEcommerce.API
-
-cd ../..
+# App sẽ tự migrate database khi khởi động
+dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 ```
 
 ### 4️⃣ Chạy Ứng Dụng
 
 ```bash
-cd src/FashionEcommerce.API
-dotnet run
+dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 ```
 
 ### 5️⃣ Kiểm Tra API
@@ -139,6 +134,11 @@ GET    /api/orders                        # Lấy đơn hàng
 GET    /api/orders/{id}                   # Chi tiết đơn hàng
 POST   /api/orders                        # Tạo đơn hàng
 PUT    /api/orders/{id}                   # Cập nhật đơn hàng
+
+POST   /api/auth/register                 # Đăng ký tài khoản
+POST   /api/auth/login                    # Đăng nhập
+POST   /api/auth/request-password-reset   # Xin token reset mật khẩu
+POST   /api/auth/reset-password          # Đổi mật khẩu bằng token
 ```
 
 ## 🗄️ Thiết Kế Database
@@ -146,6 +146,8 @@ PUT    /api/orders/{id}                   # Cập nhật đơn hàng
 ### Các Bảng Chính
 
 - **Users**: Quản lý người dùng
+- **Roles**: Vai trò người dùng
+- **Permissions**: Quyền truy cập
 - **Categories**: Danh mục sản phẩm
 - **Products**: Sản phẩm chi tiết
 - **Inventories**: Tồn kho
@@ -173,6 +175,7 @@ Dự án bao gồm seed data tự động:
 - ✅ 1 tài khoản admin
 - ✅ 3 sản phẩm mẫu
 - ✅ Tồn kho cho các sản phẩm
+- ✅ Seed roles và permissions cơ bản
 
 ## 🔒 Bảo Mật
 
@@ -183,6 +186,7 @@ Các tính năng bảo mật đã bao gồm:
 - ✅ CORS Configuration
 - ✅ Password Hashing (sẵn sàng)
 - ✅ Role-based Access (sẵn sàng)
+- ✅ Authentication JWT
 
 ## 📝 File Cấu Hình
 
@@ -200,7 +204,8 @@ Các tính năng bảo mật đã bao gồm:
 | .NET                  | 8.0       | Framework chính   |
 | ASP.NET Core          | 8.0       | Web API           |
 | Entity Framework Core | 8.0       | ORM               |
-| SQL Server            | -         | Database          |
+| PostgreSQL            | -         | Database          |
+| Neon                  | -         | Database hosting  |
 | Swagger               | 6.4.6     | API Documentation |
 
 ## 🚦 Trạng Thái Phát Triển
@@ -213,10 +218,10 @@ Các tính năng bảo mật đã bao gồm:
 - API Controllers (Products, Categories, Inventories)
 - Seed data
 - Swagger documentation
+- ✅ Authentication & JWT
 
 ⏳ **Tiếp Theo:**
 
-- [ ] Authentication & JWT
 - [ ] Authorization & Roles
 - [ ] Service layer implementations
 - [ ] Validation rules
@@ -260,7 +265,7 @@ Các tính năng bảo mật đã bao gồm:
         └────────────┬──────────────┘
                      │
         ┌────────────▼──────────────┐
-        │    SQL Server Database    │
+        │  PostgreSQL / Neon DB     │
         │    (FashionEcommerce)     │
         └───────────────────────────┘
 ```
@@ -283,9 +288,9 @@ dotnet ef database update
 
 ### Connection string issues
 
-- Kiểm tra SQL Server instance name
-- Đảm bảo SQL Server đang chạy
-- Kiểm tra Trusted Connection enabled
+- Kiểm tra Neon host/username/password
+- Đảm bảo connection string dùng `SSL Mode=Require`
+- Nếu muốn chạy local offline, cần đổi sang PostgreSQL local
 
 ### Port already in use
 

@@ -26,6 +26,11 @@ namespace FashionEcommerce.Core.Entities
         [StringLength(255)]
         public string PasswordHash { get; set; } = string.Empty;
 
+        [StringLength(255)]
+        public string? PasswordResetToken { get; set; }
+
+        public DateTime? PasswordResetTokenExpiry { get; set; }
+
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
 
