@@ -1,5 +1,6 @@
 using FashionEcommerce.Data;
 using FashionEcommerce.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,6 +91,7 @@ namespace FashionEcommerce.API.Controllers
         /// Create a new category
         /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult<Category>> CreateCategory([FromBody] Category category)
         {
             try
@@ -117,6 +119,7 @@ namespace FashionEcommerce.API.Controllers
         /// Update an existing category
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
         {
             try
@@ -150,6 +153,7 @@ namespace FashionEcommerce.API.Controllers
         /// Delete a category
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try

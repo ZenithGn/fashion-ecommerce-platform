@@ -268,7 +268,7 @@ namespace FashionEcommerce.Data
                     FirstName = "Admin",
                     LastName = "User",
                     Email = "admin@fashionecommerce.com",
-                    PasswordHash = "hashed_password_here", // In real app, this should be properly hashed
+                    PasswordHash = "AQAAAAIAAYagAAAAEOzwK0SYOoUJDmcnSlEZ1qfQ9N5os+cLuin70oW59QSlIfeFMFeYyEKIzzha7FyTHw==",
                     PhoneNumber = "0123456789",
                     RoleId = 1,
                     IsActive = true
