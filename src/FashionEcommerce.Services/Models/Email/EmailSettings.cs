@@ -1,4 +1,4 @@
-namespace FashionEcommerce.API.Models.Email
+namespace FashionEcommerce.Services.Models.Email
 {
     public sealed class EmailSettings
     {

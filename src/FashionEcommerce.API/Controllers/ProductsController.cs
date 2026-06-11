@@ -1,5 +1,6 @@
 using FashionEcommerce.Data;
 using FashionEcommerce.Core.Entities;
+using FashionEcommerce.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

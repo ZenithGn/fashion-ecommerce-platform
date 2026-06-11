@@ -1,5 +1,5 @@
-using FashionEcommerce.API.Models.Auth;
-using FashionEcommerce.API.Services.Email;
+using FashionEcommerce.Services.Models.Auth;
+using FashionEcommerce.Services.Email;
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
 using Microsoft.AspNetCore.Identity;

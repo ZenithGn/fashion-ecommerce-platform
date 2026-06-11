@@ -1,10 +1,13 @@
-using FashionEcommerce.API.Models.Email;
+using FashionEcommerce.Services.Models.Email;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System;
+using System.Threading.Tasks;
 
-namespace FashionEcommerce.API.Services.Email
+namespace FashionEcommerce.Services.Email
 {
     public sealed class SmtpEmailSender : IEmailSender
     {

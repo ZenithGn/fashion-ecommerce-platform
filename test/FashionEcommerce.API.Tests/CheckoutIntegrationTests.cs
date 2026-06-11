@@ -1,5 +1,5 @@
 using FashionEcommerce.API.Controllers;
-using FashionEcommerce.API.Models.Auth;
+using FashionEcommerce.Services.Models.Auth;
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
 using FluentAssertions;

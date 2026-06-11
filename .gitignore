@@ -95,3 +95,6 @@ npm-debug.log
 yarn-error.log
 
 appsettings.json
+.env
+
+team_development_plan.md

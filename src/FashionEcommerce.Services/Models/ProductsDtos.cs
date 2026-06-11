@@ -1,7 +1,7 @@
 using FashionEcommerce.Core.Entities;
 using System.Collections.Generic;
 
-namespace FashionEcommerce.API.Controllers
+namespace FashionEcommerce.Services.Models
 {
     public class ProductListDto
     {

@@ -1,4 +1,6 @@
-namespace FashionEcommerce.API.Services.Email
+using System.Threading.Tasks;
+
+namespace FashionEcommerce.Services.Email
 {
     public interface IEmailSender
     {

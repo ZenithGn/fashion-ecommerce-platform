@@ -1,6 +1,6 @@
 using FashionEcommerce.Data;
-using FashionEcommerce.API.Models.Email;
-using FashionEcommerce.API.Services.Email;
+using FashionEcommerce.Services.Models.Email;
+using FashionEcommerce.Services.Email;
 using FashionEcommerce.Services;
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Services;
@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Reflection;
+
+// Load environment variables from .env file
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

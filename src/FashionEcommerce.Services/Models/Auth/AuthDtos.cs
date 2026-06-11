@@ -1,4 +1,4 @@
-namespace FashionEcommerce.API.Models.Auth
+namespace FashionEcommerce.Services.Models.Auth
 {
     public sealed class RegisterRequest
     {
