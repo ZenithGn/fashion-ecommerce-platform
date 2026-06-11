@@ -1,4 +1,4 @@
-namespace FashionEcommerce.API.Models.Users
+namespace FashionEcommerce.Services.Models.Users
 {
     public sealed class UserListItemDto
     {

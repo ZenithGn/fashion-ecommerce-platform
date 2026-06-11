@@ -1,4 +1,4 @@
-namespace FashionEcommerce.API.Models.Dashboard
+namespace FashionEcommerce.Services.Models.Dashboard
 {
     public sealed class DashboardSummaryDto
     {

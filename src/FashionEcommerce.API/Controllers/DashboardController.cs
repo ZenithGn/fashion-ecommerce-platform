@@ -1,4 +1,4 @@
-using FashionEcommerce.API.Models.Dashboard;
+using FashionEcommerce.Services.Models.Dashboard;
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
 using Microsoft.AspNetCore.Authorization;
