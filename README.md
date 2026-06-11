@@ -1,8 +1,7 @@
-## README
+## Cấu hình database local
 
-Project này là backend .NET 8 cho fashion e-commerce, hiện chạy với PostgreSQL trên Neon.
+Project sử dụng PostgreSQL trên Neon. Để chạy backend ở máy cá nhân, mỗi thành viên cần tạo file cấu hình riêng:
 
-<<<<<<< HEAD
 ```text
 src/FashionEcommerce.API/appsettings.Development.json
 Nội dung file:
@@ -28,54 +27,17 @@ Ví dụ:
 Lưu ý: không commit file appsettings.Development.json lên GitHub vì file này chứa thông tin kết nối database.
 
 Sau khi tạo file cấu hình, chạy backend bằng lệnh:
-=======
-### Chạy local
->>>>>>> 85dff19521bffdb1080f55a048fc08c8b6f647c6
 
-```bash
 dotnet restore
 dotnet build
 dotnet run --project src/FashionEcommerce.API/FashionEcommerce.API.csproj
-```
+Nếu cần cập nhật database theo migration mới nhất:
 
-### Cấu hình DB
+dotnet ef database update \
+  --project src/FashionEcommerce.Data/FashionEcommerce.Data.csproj \
+  --startup-project src/FashionEcommerce.API/FashionEcommerce.API.csproj
 
-`src/FashionEcommerce.API/appsettings.json` đã có connection string Neon. Nếu muốn dùng DB riêng, tạo `src/FashionEcommerce.API/appsettings.Development.json`:
+Nhớ thêm dòng này vào `.gitignore`:
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=YOUR_NEON_HOST;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD;SSL Mode=Require;Trust Server Certificate=true"
-  }
-}
-```
-
-### API auth
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/request-password-reset`
-- `POST /api/auth/reset-password`
-
-### Reset mật khẩu qua email thật
-
-Để gửi mail thật bằng Gmail, cần cấu hình `EmailSettings` với:
-
-- `SmtpHost`: `smtp.gmail.com`
-- `SmtpPort`: `587`
-- `Username` / `FromEmail`: Gmail gửi mail
-- `Password`: Gmail App Password, không dùng mật khẩu đăng nhập thường
-
-Mẫu request reset cho email của bạn:
-
-```json
-{
-  "email": "khangblue1101@gmail.com"
-}
-```
-
-Sau khi gọi `POST /api/auth/request-password-reset`, token sẽ được gửi vào inbox email này.
-
-### Swagger
-
-`https://localhost:5001/swagger`
+```gitignore
+src/FashionEcommerce.API/appsettings.Development.json
