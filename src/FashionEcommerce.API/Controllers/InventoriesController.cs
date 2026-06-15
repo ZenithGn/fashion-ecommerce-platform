@@ -1,8 +1,7 @@
-using FashionEcommerce.Data;
 using FashionEcommerce.Core.Entities;
+using FashionEcommerce.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FashionEcommerce.API.Controllers
 {
@@ -10,12 +9,12 @@ namespace FashionEcommerce.API.Controllers
     [Route("api/[controller]")]
     public class InventoriesController : ControllerBase
     {
-        private readonly FashionEcommerceDbContext _context;
+        private readonly IInventoryService _inventoryService;
         private readonly ILogger<InventoriesController> _logger;
 
-        public InventoriesController(FashionEcommerceDbContext context, ILogger<InventoriesController> logger)
+        public InventoriesController(IInventoryService inventoryService, ILogger<InventoriesController> logger)
         {
-            _context = context;
+            _inventoryService = inventoryService;
             _logger = logger;
         }
 
@@ -27,10 +26,7 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventories = await _context.Inventories
-                    .Where(i => !i.IsDeleted)
-                    .Include(i => i.Product)
-                    .ToListAsync();
+                var inventories = await _inventoryService.GetAllInventoriesAsync();
                 return Ok(inventories);
             }
             catch (Exception ex)
@@ -48,14 +44,9 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories
-                    .Where(i => i.Id == id && !i.IsDeleted)
-                    .Include(i => i.Product)
-                    .FirstOrDefaultAsync();
-
+                var inventory = await _inventoryService.GetInventoryByIdAsync(id);
                 if (inventory == null)
                     return NotFound("Inventory not found");
-
                 return Ok(inventory);
             }
             catch (Exception ex)
@@ -73,14 +64,9 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories
-                    .Where(i => i.ProductId == productId && !i.IsDeleted)
-                    .Include(i => i.Product)
-                    .FirstOrDefaultAsync();
-
+                var inventory = await _inventoryService.GetInventoryByProductIdAsync(productId);
                 if (inventory == null)
                     return NotFound("Inventory not found for this product");
-
                 return Ok(inventory);
             }
             catch (Exception ex)
@@ -98,19 +84,13 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories
-                    .Where(i => i.ProductId == productId && !i.IsDeleted)
-                    .FirstOrDefaultAsync();
-
-                if (inventory == null)
-                    return NotFound("Inventory not found");
-
+                var available = await _inventoryService.GetAvailableQuantityAsync(productId);
                 return Ok(new
                 {
                     productId = productId,
-                    totalQuantity = inventory.Quantity,
-                    reservedQuantity = inventory.ReservedQuantity,
-                    availableQuantity = inventory.AvailableQuantity
+                    totalQuantity = (await _inventoryService.GetInventoryByProductIdAsync(productId))?.Quantity ?? 0,
+                    reservedQuantity = (await _inventoryService.GetInventoryByProductIdAsync(productId))?.ReservedQuantity ?? 0,
+                    availableQuantity = available
                 });
             }
             catch (Exception ex)
@@ -131,20 +111,14 @@ namespace FashionEcommerce.API.Controllers
                 if (request?.ProductId <= 0 || request.Quantity <= 0)
                     return BadRequest("Invalid product id or quantity");
 
-                var inventory = await _context.Inventories
-                    .Where(i => i.ProductId == request.ProductId && !i.IsDeleted)
-                    .FirstOrDefaultAsync();
-
-                if (inventory == null)
-                    return NotFound("Inventory not found");
-
-                bool isAvailable = inventory.AvailableQuantity >= request.Quantity;
+                var isAvailable = await _inventoryService.CheckAvailabilityAsync(request.ProductId, request.Quantity);
+                var available = await _inventoryService.GetAvailableQuantityAsync(request.ProductId);
 
                 return Ok(new
                 {
                     productId = request.ProductId,
                     requestedQuantity = request.Quantity,
-                    availableQuantity = inventory.AvailableQuantity,
+                    availableQuantity = available,
                     isAvailable = isAvailable
                 });
             }
@@ -173,11 +147,8 @@ namespace FashionEcommerce.API.Controllers
                 if (inventory.Quantity < 0)
                     return BadRequest("Quantity cannot be negative");
 
-                inventory.CreatedAt = DateTime.UtcNow;
-                _context.Inventories.Add(inventory);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetInventoryById), new { id = inventory.Id }, inventory);
+                var created = await _inventoryService.CreateOrUpdateInventoryAsync(inventory);
+                return CreatedAtAction(nameof(GetInventoryById), new { id = created.Id }, created);
             }
             catch (Exception ex)
             {
@@ -197,21 +168,8 @@ namespace FashionEcommerce.API.Controllers
             {
                 if (id != inventory.Id)
                     return BadRequest("ID mismatch");
-
-                var existingInventory = await _context.Inventories.FindAsync(id);
-                if (existingInventory == null)
-                    return NotFound("Inventory not found");
-
-                existingInventory.Quantity = inventory.Quantity;
-                existingInventory.ReservedQuantity = inventory.ReservedQuantity;
-                existingInventory.Location = inventory.Location;
-                existingInventory.Notes = inventory.Notes;
-                existingInventory.UpdatedAt = DateTime.UtcNow;
-
-                _context.Inventories.Update(existingInventory);
-                await _context.SaveChangesAsync();
-
-                return Ok(existingInventory);
+                var updated = await _inventoryService.CreateOrUpdateInventoryAsync(inventory);
+                return Ok(updated);
             }
             catch (Exception ex)
             {
@@ -229,27 +187,17 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories.FindAsync(id);
-                if (inventory == null)
-                    return NotFound("Inventory not found");
-
                 if (request?.Quantity <= 0)
                     return BadRequest("Invalid quantity");
 
-                if (inventory.AvailableQuantity < request.Quantity)
-                    return BadRequest("Insufficient inventory");
+                var inventory = await _inventoryService.GetInventoryByIdAsync(id);
+                if (inventory == null) return NotFound("Inventory not found");
 
-                inventory.ReservedQuantity += request.Quantity;
-                inventory.UpdatedAt = DateTime.UtcNow;
+                var success = await _inventoryService.ReserveInventoryAsync(inventory.ProductId, request.Quantity);
+                if (!success) return BadRequest("Insufficient inventory");
 
-                _context.Inventories.Update(inventory);
-                await _context.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    message = "Inventory reserved successfully",
-                    inventory = inventory
-                });
+                var updated = await _inventoryService.GetInventoryByIdAsync(id);
+                return Ok(new { message = "Inventory reserved successfully", inventory = updated });
             }
             catch (Exception ex)
             {
@@ -267,27 +215,17 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories.FindAsync(id);
-                if (inventory == null)
-                    return NotFound("Inventory not found");
-
                 if (request?.Quantity <= 0)
                     return BadRequest("Invalid quantity");
 
-                if (inventory.ReservedQuantity < request.Quantity)
-                    return BadRequest("Cannot release more than reserved");
+                var inventory = await _inventoryService.GetInventoryByIdAsync(id);
+                if (inventory == null) return NotFound("Inventory not found");
 
-                inventory.ReservedQuantity -= request.Quantity;
-                inventory.UpdatedAt = DateTime.UtcNow;
+                var success = await _inventoryService.ReleaseReservationAsync(inventory.ProductId, request.Quantity);
+                if (!success) return BadRequest("Failed to release reservation");
 
-                _context.Inventories.Update(inventory);
-                await _context.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    message = "Inventory released successfully",
-                    inventory = inventory
-                });
+                var updated = await _inventoryService.GetInventoryByIdAsync(id);
+                return Ok(new { message = "Inventory released successfully", inventory = updated });
             }
             catch (Exception ex)
             {
@@ -305,15 +243,8 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                var inventory = await _context.Inventories.FindAsync(id);
-                if (inventory == null)
-                    return NotFound("Inventory not found");
-
-                inventory.IsDeleted = true;
-                inventory.UpdatedAt = DateTime.UtcNow;
-                _context.Inventories.Update(inventory);
-                await _context.SaveChangesAsync();
-
+                var success = await _inventoryService.DeleteInventoryAsync(id);
+                if (!success) return NotFound("Inventory not found");
                 return NoContent();
             }
             catch (Exception ex)
