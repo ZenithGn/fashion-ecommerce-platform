@@ -52,6 +52,9 @@ namespace FashionEcommerce.Services.Interfaces
         Task<int> GetAvailableQuantityAsync(int productId);
         Task<bool> CheckAvailabilityAsync(int productId, int quantity);
         Task<Inventory> UpdateInventoryAsync(int productId, int quantity);
+        Task<IEnumerable<Inventory>> GetAllInventoriesAsync();
+        Task<Inventory> CreateOrUpdateInventoryAsync(Inventory inventory);
+        Task<bool> DeleteInventoryAsync(int inventoryId);
         Task<bool> ReserveInventoryAsync(int productId, int quantity);
         Task<bool> ReleaseReservationAsync(int productId, int quantity);
     }
