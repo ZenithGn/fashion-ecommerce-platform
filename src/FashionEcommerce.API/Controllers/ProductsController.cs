@@ -1,6 +1,10 @@
 using FashionEcommerce.Core.Entities;
+<<<<<<< HEAD
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Products;
+=======
+using FashionEcommerce.Services.Models;
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -206,6 +210,7 @@ namespace FashionEcommerce.API.Controllers
         /// </summary>
         [Authorize(Roles = "Staff,Admin")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
             try
@@ -231,6 +236,7 @@ namespace FashionEcommerce.API.Controllers
         /// </summary>
         [Authorize(Roles = "Staff,Admin")]
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
         {
             try
@@ -253,6 +259,7 @@ namespace FashionEcommerce.API.Controllers
         /// </summary>
         [Authorize(Roles = "Staff,Admin")]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try

@@ -1,6 +1,10 @@
 using FashionEcommerce.Core.Entities;
+<<<<<<< HEAD
 using FashionEcommerce.Services.Categories;
 using FashionEcommerce.Services.Interfaces;
+=======
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
 using Microsoft.AspNetCore.Mvc;
 
 namespace FashionEcommerce.API.Controllers
@@ -80,7 +84,12 @@ namespace FashionEcommerce.API.Controllers
         /// Create a new category
         /// </summary>
         [HttpPost]
+<<<<<<< HEAD
         public async Task<ActionResult<Category>> CreateCategory([FromBody] CreateCategoryDto dto)
+=======
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<ActionResult<Category>> CreateCategory([FromBody] Category category)
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
         {
             try
             {
@@ -104,7 +113,12 @@ namespace FashionEcommerce.API.Controllers
         /// Update an existing category
         /// </summary>
         [HttpPut("{id}")]
+<<<<<<< HEAD
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto dto)
+=======
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
         {
             try
             {
@@ -125,6 +139,7 @@ namespace FashionEcommerce.API.Controllers
         /// Delete a category
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try

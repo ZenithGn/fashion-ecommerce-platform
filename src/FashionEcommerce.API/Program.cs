@@ -1,20 +1,37 @@
 using FashionEcommerce.Data;
+<<<<<<< HEAD
 using FashionEcommerce.API.Models.Email;
 using FashionEcommerce.API.Services.Email;
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Products;
 using FashionEcommerce.Services.Categories;
+=======
+using FashionEcommerce.Services.Models.Email;
+using FashionEcommerce.Services.Email;
+using FashionEcommerce.Services;
+using FashionEcommerce.Services.Interfaces;
+using FashionEcommerce.Services.Services;
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Reflection;
+
+// Load environment variables from .env file
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -23,6 +40,16 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 
+<<<<<<< HEAD
+=======
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
+
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -30,7 +57,11 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
+<<<<<<< HEAD
         Description = "Enter your JWT token. Example: Bearer eyJhbGciOi..."
+=======
+        Description = "Enter JWT token with Bearer prefix. Example: Bearer {token}"
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -50,8 +81,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+<<<<<<< HEAD
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+=======
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");
