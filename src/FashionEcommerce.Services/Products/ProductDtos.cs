@@ -1,8 +1,58 @@
 using FashionEcommerce.Core.Entities;
-using System.Collections.Generic;
 
-namespace FashionEcommerce.Services.Models
+namespace FashionEcommerce.Services.Products
 {
+    public class ProductQueryParameters
+    {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
+        public int? CategoryId { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public string? Size { get; set; }
+        public string? Color { get; set; }
+        public string? Sort { get; set; }
+        public string? SortBy { get; set; }
+        public string? SortDirection { get; set; }
+    }
+
+    public class SearchProductQueryParameters
+    {
+        public string? SearchTerm { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
+        public int? CategoryId { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public string? Size { get; set; }
+        public string? Color { get; set; }
+        public string? Brand { get; set; }
+        public string? Sort { get; set; }
+        public string? SortBy { get; set; }
+        public string? SortDirection { get; set; }
+    }
+
+    public class ProductServiceResult<T>
+    {
+        public bool Succeeded { get; set; }
+        public string? ErrorMessage { get; set; }
+        public ProductServiceError Error { get; set; } = ProductServiceError.None;
+        public T? Data { get; set; }
+
+        public static ProductServiceResult<T> Success(T data) => new() { Succeeded = true, Data = data };
+
+        public static ProductServiceResult<T> Failure(ProductServiceError error, string message) =>
+            new() { Succeeded = false, Error = error, ErrorMessage = message };
+    }
+
+    public enum ProductServiceError
+    {
+        None,
+        Validation,
+        NotFound,
+        Conflict
+    }
+
     public class ProductListDto
     {
         public int Id { get; set; }
@@ -12,7 +62,7 @@ namespace FashionEcommerce.Services.Models
         public CategoryDto? Category { get; set; }
         public string? ThumbnailUrl { get; set; }
         public int AvailableQuantity { get; set; }
-        public List<VariantSummaryDto> VariantsSummary { get; set; } = new List<VariantSummaryDto>();
+        public List<VariantSummaryDto> VariantsSummary { get; set; } = new();
     }
 
     public class VariantSummaryDto
@@ -35,7 +85,7 @@ namespace FashionEcommerce.Services.Models
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int TotalItems { get; set; }
-        public List<T> Items { get; set; } = new List<T>();
+        public List<T> Items { get; set; } = new();
     }
 
     public class ProductSearchDto
@@ -45,6 +95,10 @@ namespace FashionEcommerce.Services.Models
         public string? Description { get; set; }
         public decimal BasePrice { get; set; }
         public decimal Price { get; set; }
+        public decimal? DiscountPrice { get; set; }
+        public string? Brand { get; set; }
+        public string? Color { get; set; }
+        public string? Size { get; set; }
         public CategoryDto? Category { get; set; }
         public string? ThumbnailUrl { get; set; }
         public int AvailableQuantity { get; set; }
@@ -58,8 +112,8 @@ namespace FashionEcommerce.Services.Models
         public decimal BasePrice { get; set; }
         public decimal? DiscountPrice { get; set; }
         public CategoryDto? Category { get; set; }
-        public List<ImageDto> Images { get; set; } = new List<ImageDto>();
-        public List<VariantDetailDto> Variants { get; set; } = new List<VariantDetailDto>();
+        public List<ImageDto> Images { get; set; } = new();
+        public List<VariantDetailDto> Variants { get; set; } = new();
         public int AvailableQuantity { get; set; }
     }
 
@@ -80,7 +134,6 @@ namespace FashionEcommerce.Services.Models
         public bool IsThumbnail { get; set; }
     }
 
-    // DTOs for creating products
     public class CreateProductDto
     {
         public string Name { get; set; } = string.Empty;

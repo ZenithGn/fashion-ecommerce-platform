@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 using FashionEcommerce.API.Controllers;
-using FashionEcommerce.Services.Models;
+using FashionEcommerce.Services.Products;
 
 namespace FashionEcommerce.API.Tests
 {

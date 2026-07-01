@@ -108,7 +108,7 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                if (request?.ProductId <= 0 || request.Quantity <= 0)
+                if (request == null || request.ProductId <= 0 || request.Quantity <= 0)
                     return BadRequest("Invalid product id or quantity");
 
                 var isAvailable = await _inventoryService.CheckAvailabilityAsync(request.ProductId, request.Quantity);
@@ -166,6 +166,9 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
+                if (inventory == null)
+                    return BadRequest("Inventory cannot be null");
+
                 if (id != inventory.Id)
                     return BadRequest("ID mismatch");
                 var updated = await _inventoryService.CreateOrUpdateInventoryAsync(inventory);
@@ -187,7 +190,7 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                if (request?.Quantity <= 0)
+                if (request == null || request.Quantity <= 0)
                     return BadRequest("Invalid quantity");
 
                 var inventory = await _inventoryService.GetInventoryByIdAsync(id);
@@ -215,7 +218,7 @@ namespace FashionEcommerce.API.Controllers
         {
             try
             {
-                if (request?.Quantity <= 0)
+                if (request == null || request.Quantity <= 0)
                     return BadRequest("Invalid quantity");
 
                 var inventory = await _inventoryService.GetInventoryByIdAsync(id);

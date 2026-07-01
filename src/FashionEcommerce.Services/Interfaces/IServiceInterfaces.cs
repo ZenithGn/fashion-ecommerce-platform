@@ -1,4 +1,6 @@
 using FashionEcommerce.Core.Entities;
+using FashionEcommerce.Services.Products;
+using FashionEcommerce.Services.Categories;
 
 namespace FashionEcommerce.Services.Interfaces
 {
@@ -20,12 +22,12 @@ namespace FashionEcommerce.Services.Interfaces
     /// </summary>
     public interface IProductService
     {
-        Task<Product?> GetProductByIdAsync(int productId);
+        Task<PagedResult<ProductListDto>> GetProductsAsync(ProductQueryParameters parameters);
+        Task<ProductDetailDto?> GetProductByIdAsync(int productId);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
-        Task<Product> CreateProductAsync(Product product);
-        Task<Product> UpdateProductAsync(Product product);
+        Task<ProductServiceResult<PagedResult<ProductSearchDto>>> SearchProductsAsync(SearchProductQueryParameters parameters);
+        Task<ProductServiceResult<ProductDetailDto>> CreateProductAsync(CreateProductDto dto);
+        Task<ProductServiceResult<Product>> UpdateProductAsync(int id, Product product);
         Task<bool> DeleteProductAsync(int productId);
     }
 
@@ -37,8 +39,8 @@ namespace FashionEcommerce.Services.Interfaces
         Task<Category?> GetCategoryByIdAsync(int categoryId);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<IEnumerable<Category>> GetSubCategoriesAsync(int parentCategoryId);
-        Task<Category> CreateCategoryAsync(Category category);
-        Task<Category> UpdateCategoryAsync(Category category);
+        Task<CategoryServiceResult<Category>> CreateCategoryAsync(CreateCategoryDto dto);
+        Task<CategoryServiceResult<Category>> UpdateCategoryAsync(int id, UpdateCategoryDto dto);
         Task<bool> DeleteCategoryAsync(int categoryId);
     }
 
