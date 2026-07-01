@@ -1,8 +1,10 @@
 using FluentAssertions;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Xunit;
 using FashionEcommerce.API.Controllers;
+using FashionEcommerce.Services.Models.Auth;
 using FashionEcommerce.Services.Products;
 
 namespace FashionEcommerce.API.Tests
@@ -20,6 +22,8 @@ namespace FashionEcommerce.API.Tests
         public async Task CreateProduct_Success_With_Variants_And_Images()
         {
             var client = _factory.CreateClient();
+            await SignInAsAdminAsync(client);
+
             var dto = new CreateProductDto
             {
                 Name = "New Product",
@@ -49,6 +53,8 @@ namespace FashionEcommerce.API.Tests
         public async Task CreateProduct_InvalidCategory_Returns_BadRequest()
         {
             var client = _factory.CreateClient();
+            await SignInAsAdminAsync(client);
+
             var dto = new CreateProductDto
             {
                 Name = "Bad Cat",
@@ -64,6 +70,8 @@ namespace FashionEcommerce.API.Tests
         public async Task CreateProduct_DuplicateSKUInPayload_Returns_Conflict()
         {
             var client = _factory.CreateClient();
+            await SignInAsAdminAsync(client);
+
             var dto = new CreateProductDto
             {
                 Name = "Dup SKU",
@@ -129,6 +137,19 @@ namespace FashionEcommerce.API.Tests
             dto!.Variants.Should().BeEmpty();
             // No variants: variants list empty and price should be base price for any variant returns
             dto.BasePrice.Should().Be(75m);
+        }
+
+        private static async Task SignInAsAdminAsync(HttpClient client)
+        {
+            var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest
+            {
+                Email = "admin@example.com",
+                Password = "Password123!"
+            });
+
+            response.EnsureSuccessStatusCode();
+            var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
         }
     }
 }

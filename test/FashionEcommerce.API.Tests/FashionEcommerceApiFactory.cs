@@ -2,6 +2,7 @@ using FashionEcommerce.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FashionEcommerce.API.Tests
@@ -10,9 +11,28 @@ namespace FashionEcommerce.API.Tests
     {
         private readonly string _dbName = $"FashionEcommerceTestDb_{Guid.NewGuid()}";
 
+        public FashionEcommerceApiFactory()
+        {
+            Environment.SetEnvironmentVariable("JwtSettings__SecretKey", "test-jwt-secret-key-with-at-least-32-characters");
+            Environment.SetEnvironmentVariable("JwtSettings__Issuer", "FashionEcommerce.Tests");
+            Environment.SetEnvironmentVariable("JwtSettings__Audience", "FashionEcommerce.Tests");
+            Environment.SetEnvironmentVariable("JwtSettings__ExpirationMinutes", "60");
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Testing");
+            builder.ConfigureAppConfiguration((_, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["JwtSettings:SecretKey"] = "test-jwt-secret-key-with-at-least-32-characters",
+                    ["JwtSettings:Issuer"] = "FashionEcommerce.Tests",
+                    ["JwtSettings:Audience"] = "FashionEcommerce.Tests",
+                    ["JwtSettings:ExpirationMinutes"] = "60"
+                });
+            });
+
             builder.ConfigureServices(services =>
             {
                 // Remove existing DbContext

@@ -75,6 +75,10 @@ namespace FashionEcommerce.Services.Products
         public async Task<ProductDetailDto?> GetProductByIdAsync(int productId)
         {
             return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.Variants)
+                .Include(p => p.Inventories)
                 .Where(p => p.Id == productId && !p.IsDeleted)
                 .Select(p => ToProductDetailDto(p))
                 .FirstOrDefaultAsync();
@@ -113,10 +117,20 @@ namespace FashionEcommerce.Services.Products
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                var keyword = $"%{searchTerm}%";
-                query = query.Where(p =>
-                    EF.Functions.ILike(p.Name, keyword) ||
-                    (p.Description != null && EF.Functions.ILike(p.Description, keyword)));
+                if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+                {
+                    var normalized = searchTerm.ToLowerInvariant();
+                    query = query.Where(p =>
+                        p.Name.ToLower().Contains(normalized) ||
+                        (p.Description != null && p.Description.ToLower().Contains(normalized)));
+                }
+                else
+                {
+                    var keyword = $"%{searchTerm}%";
+                    query = query.Where(p =>
+                        EF.Functions.ILike(p.Name, keyword) ||
+                        (p.Description != null && EF.Functions.ILike(p.Description, keyword)));
+                }
             }
 
             if (parameters.CategoryId.HasValue)
@@ -135,7 +149,17 @@ namespace FashionEcommerce.Services.Products
                 query = query.Where(p => p.Color == parameters.Color || p.Variants.Any(v => v.Color == parameters.Color));
 
             if (!string.IsNullOrWhiteSpace(parameters.Brand))
-                query = query.Where(p => p.Brand != null && EF.Functions.ILike(p.Brand, $"%{parameters.Brand.Trim()}%"));
+            {
+                if (_context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+                {
+                    var normalizedBrand = parameters.Brand.Trim().ToLowerInvariant();
+                    query = query.Where(p => p.Brand != null && p.Brand.ToLower().Contains(normalizedBrand));
+                }
+                else
+                {
+                    query = query.Where(p => p.Brand != null && EF.Functions.ILike(p.Brand, $"%{parameters.Brand.Trim()}%"));
+                }
+            }
 
             query = ApplyProductSorting(query, parameters.Sort, parameters.SortBy, parameters.SortDirection);
 

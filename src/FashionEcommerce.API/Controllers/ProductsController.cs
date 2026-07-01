@@ -22,7 +22,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get all products
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet]
         public async Task<ActionResult> GetAllProducts(
             [FromQuery] int page = 1,
@@ -69,7 +68,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get paged products and sort by price, size, color, name, or newest
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("paged-sort")]
         public async Task<ActionResult> GetPagedAndSortedProducts(
             [FromQuery] int page = 1,
@@ -109,7 +107,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get product by id
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProductById(int id)
         {
@@ -132,7 +129,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get products by category
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("category/{categoryId}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategory(int categoryId)
         {
@@ -155,7 +151,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Advanced product search by name, description and filters
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("search")]
         public async Task<ActionResult> SearchProducts(
             [FromQuery] string? searchTerm = null,
