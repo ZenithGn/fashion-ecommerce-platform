@@ -12,9 +12,13 @@ namespace FashionEcommerce.Services.Interfaces
         Task<User?> GetUserByIdAsync(int userId);
         Task<User?> GetUserByEmailAsync(string email);
         Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<IEnumerable<User>> GetUsersAsync(string? search, int? roleId, bool? isActive);
         Task<User> CreateUserAsync(User user);
         Task<User> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(int userId);
+        Task<User?> LockUserAsync(int userId);
+        Task<User?> UnlockUserAsync(int userId);
+        Task<User?> UpdateUserRoleAsync(int userId, int roleId);
     }
 
     /// <summary>
@@ -86,5 +90,20 @@ namespace FashionEcommerce.Services.Interfaces
         Task<Order> CreateOrderAsync(Order order);
         Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status);
         Task<bool> CancelOrderAsync(int orderId);
+    }
+
+    /// <summary>
+    /// Interface for Shipment service
+    /// </summary>
+    public interface IShipmentService
+    {
+        Task<IEnumerable<Shipment>> GetShipmentsAsync(ShipmentStatus? status, string? carrier, DateTime? from, DateTime? to);
+        Task<Shipment?> GetShipmentByIdAsync(int id);
+        Task<Shipment?> GetShipmentByOrderIdAsync(int orderId);
+        Task<Shipment> CreateShipmentAsync(int orderId, string carrierName, string? trackingNumber, decimal shippingFee, DateTime? estimatedDeliveryDate, string? notes);
+        Task<Shipment> UpdateShipmentAsync(int id, string carrierName, string? trackingNumber, decimal shippingFee, DateTime? estimatedDeliveryDate, string? notes);
+        Task<Shipment> UpdateShipmentStatusAsync(int id, ShipmentStatus status, string? location, string? note, DateTime? occurredAt);
+        Task<Shipment> AddShipmentEventAsync(int shipmentId, ShipmentStatus status, string? location, string? note, DateTime? occurredAt);
+        Task<IEnumerable<ShipmentEvent>> GetShipmentEventsAsync(int shipmentId);
     }
 }

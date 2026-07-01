@@ -74,6 +74,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IShipmentService, ShipmentService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");
@@ -141,10 +142,11 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseCors("AllowAll");
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();
 

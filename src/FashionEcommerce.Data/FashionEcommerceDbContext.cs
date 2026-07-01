@@ -28,6 +28,8 @@ namespace FashionEcommerce.Data
         public DbSet<CartItem> CartItems { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Shipment> Shipments { get; set; } = null!;
+        public DbSet<ShipmentEvent> ShipmentEvents { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -206,6 +208,11 @@ namespace FashionEcommerce.Data
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Shipment)
+                    .WithOne(s => s.Order)
+                    .HasForeignKey<Shipment>(s => s.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configure OrderItem entity
@@ -214,6 +221,30 @@ namespace FashionEcommerce.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(10,2)");
+            });
+
+            // Configure Shipment entity
+            modelBuilder.Entity<Shipment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CarrierName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.TrackingNumber).HasMaxLength(100);
+                entity.Property(e => e.ShippingFee).HasColumnType("decimal(10,2)");
+                entity.HasIndex(e => e.OrderId).IsUnique();
+                entity.HasIndex(e => e.TrackingNumber);
+                entity.HasMany(e => e.Events)
+                    .WithOne(e => e.Shipment)
+                    .HasForeignKey(e => e.ShipmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure ShipmentEvent entity
+            modelBuilder.Entity<ShipmentEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Location).HasMaxLength(255);
+                entity.Property(e => e.Note).HasMaxLength(500);
+                entity.HasIndex(e => e.ShipmentId);
             });
 
             // Add seed data

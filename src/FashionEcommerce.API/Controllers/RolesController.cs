@@ -19,6 +19,9 @@ namespace FashionEcommerce.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of all active roles in the system with their associated permissions (Admin only)
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleDto>>> GetRoles()
         {
@@ -33,6 +36,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(roles.Select(MapRole));
         }
 
+        /// <summary>
+        /// Get details of a specific role by ID with permissions (Admin only)
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<RoleDto>> GetRole(int id)
         {
@@ -46,6 +52,9 @@ namespace FashionEcommerce.API.Controllers
             return role == null ? NotFound("Role not found") : Ok(MapRole(role));
         }
 
+        /// <summary>
+        /// Create a new system role and assign permissions (Admin only)
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<RoleDto>> CreateRole([FromBody] CreateRoleRequest request)
         {
@@ -74,6 +83,9 @@ namespace FashionEcommerce.API.Controllers
             return CreatedAtAction(nameof(GetRole), new { id = role.Id }, MapRole(created!));
         }
 
+        /// <summary>
+        /// Update an existing role definition and replace its permissions (Admin only)
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RoleDto>> UpdateRole(int id, [FromBody] UpdateRoleRequest request)
         {
@@ -101,6 +113,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(MapRole(updated!));
         }
 
+        /// <summary>
+        /// Soft delete a role by ID (Admin only, system roles cannot be deleted)
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int id)
         {
@@ -123,6 +138,9 @@ namespace FashionEcommerce.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Directly assign a collection of permission IDs to a role (Admin only)
+        /// </summary>
         [HttpPut("{id}/permissions")]
         public async Task<ActionResult<RoleDto>> AssignPermissions(int id, [FromBody] AssignPermissionsRequest request)
         {

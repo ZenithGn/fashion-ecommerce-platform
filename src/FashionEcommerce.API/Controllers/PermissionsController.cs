@@ -19,6 +19,9 @@ namespace FashionEcommerce.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of all active permissions in the system (Admin only)
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PermissionDto>>> GetPermissions()
         {
@@ -32,6 +35,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(permissions);
         }
 
+        /// <summary>
+        /// Get details of a specific permission by ID (Admin only)
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<PermissionDto>> GetPermission(int id)
         {
@@ -42,6 +48,9 @@ namespace FashionEcommerce.API.Controllers
             return permission == null ? NotFound("Permission not found") : Ok(MapPermission(permission));
         }
 
+        /// <summary>
+        /// Create a new system permission (Admin only)
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<PermissionDto>> CreatePermission([FromBody] CreatePermissionRequest request)
         {
@@ -66,6 +75,9 @@ namespace FashionEcommerce.API.Controllers
             return CreatedAtAction(nameof(GetPermission), new { id = permission.Id }, MapPermission(permission));
         }
 
+        /// <summary>
+        /// Update an existing permission definition by ID (Admin only)
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<PermissionDto>> UpdatePermission(int id, [FromBody] UpdatePermissionRequest request)
         {
@@ -90,6 +102,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(MapPermission(permission));
         }
 
+        /// <summary>
+        /// Soft delete a permission by ID (Admin only)
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePermission(int id)
         {

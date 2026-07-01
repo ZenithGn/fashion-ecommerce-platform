@@ -64,6 +64,7 @@ namespace FashionEcommerce.Core.Entities
         [ForeignKey("UserId")]
         public virtual User? User { get; set; }
         public virtual ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+        public virtual Shipment? Shipment { get; set; }
     }
 
     /// <summary>

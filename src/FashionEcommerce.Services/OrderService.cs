@@ -24,6 +24,8 @@ namespace FashionEcommerce.Services
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
+                .Include(o => o.Shipment)
+                .ThenInclude(s => s!.Events)
                 .FirstOrDefaultAsync(o => o.Id == orderId && !o.IsDeleted);
         }
 
@@ -33,6 +35,8 @@ namespace FashionEcommerce.Services
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
+                .Include(o => o.Shipment)
+                .ThenInclude(s => s!.Events)
                 .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber && !o.IsDeleted);
         }
 
@@ -41,6 +45,7 @@ namespace FashionEcommerce.Services
             return await _context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
+                .Include(o => o.Shipment)
                 .Where(o => o.UserId == userId && !o.IsDeleted)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
@@ -52,6 +57,7 @@ namespace FashionEcommerce.Services
                 .Include(o => o.Items)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
+                .Include(o => o.Shipment)
                 .Where(o => !o.IsDeleted)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();

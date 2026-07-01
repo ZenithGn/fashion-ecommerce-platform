@@ -39,6 +39,31 @@ namespace FashionEcommerce.Services.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetUsersAsync(string? search, int? roleId, bool? isActive)
+        {
+            var query = _context.Users
+                .Include(u => u.Role)
+                .Where(u => !u.IsDeleted);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var normalizedSearch = search.Trim().ToLower();
+                query = query.Where(u =>
+                    u.FirstName.ToLower().Contains(normalizedSearch) ||
+                    u.LastName.ToLower().Contains(normalizedSearch) ||
+                    u.Email.ToLower().Contains(normalizedSearch) ||
+                    (u.PhoneNumber != null && u.PhoneNumber.Contains(normalizedSearch)));
+            }
+
+            if (roleId.HasValue)
+                query = query.Where(u => u.RoleId == roleId.Value);
+
+            if (isActive.HasValue)
+                query = query.Where(u => u.IsActive == isActive.Value);
+
+            return await query.OrderByDescending(u => u.CreatedAt).ToListAsync();
+        }
+
         public async Task<User> CreateUserAsync(User user)
         {
             user.CreatedAt = DateTime.UtcNow;
@@ -68,6 +93,43 @@ namespace FashionEcommerce.Services.Services
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<User?> LockUserAsync(int userId)
+        {
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+            if (user == null) return null;
+
+            user.IsActive = false;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User?> UnlockUserAsync(int userId)
+        {
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+            if (user == null) return null;
+
+            user.IsActive = true;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User?> UpdateUserRoleAsync(int userId, int roleId)
+        {
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+            if (user == null) return null;
+
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId && !r.IsDeleted);
+            if (role == null) return null;
+
+            user.RoleId = role.Id;
+            user.Role = role;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return user;
         }
     }
 }
