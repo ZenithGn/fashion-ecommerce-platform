@@ -483,6 +483,30 @@ namespace FashionEcommerce.Data.Migrations
                             CreatedAt = new DateTime(2026, 6, 8, 8, 18, 20, 691, DateTimeKind.Utc).AddTicks(1008),
                             Description = "View reports",
                             IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ActionName = "dashboard.view",
+                            CreatedAt = new DateTime(2026, 7, 1, 7, 0, 0, DateTimeKind.Utc),
+                            Description = "View admin dashboard",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ActionName = "inventory.manage",
+                            CreatedAt = new DateTime(2026, 7, 1, 7, 0, 0, DateTimeKind.Utc),
+                            Description = "Manage inventory",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ActionName = "roles.manage",
+                            CreatedAt = new DateTime(2026, 7, 1, 7, 0, 0, DateTimeKind.Utc),
+                            Description = "Manage roles and permissions",
+                            IsDeleted = false
                         });
                 });
 
@@ -755,6 +779,14 @@ namespace FashionEcommerce.Data.Migrations
                             Description = "Store staff account",
                             IsDeleted = false,
                             RoleName = "Staff"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 7, 1, 7, 0, 0, DateTimeKind.Utc),
+                            Description = "Operations manager account",
+                            IsDeleted = false,
+                            RoleName = "Manager"
                         });
                 });
 
@@ -805,6 +837,21 @@ namespace FashionEcommerce.Data.Migrations
                         },
                         new
                         {
+                            RoleId = 1,
+                            PermissionId = 7
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 8
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 9
+                        },
+                        new
+                        {
                             RoleId = 3,
                             PermissionId = 1
                         },
@@ -820,9 +867,158 @@ namespace FashionEcommerce.Data.Migrations
                         },
                         new
                         {
+                            RoleId = 3,
+                            PermissionId = 7
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            PermissionId = 8
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 2
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 3
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 4
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 5
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 6
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 7
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            PermissionId = 8
+                        },
+                        new
+                        {
                             RoleId = 2,
                             PermissionId = 1
                         });
+                });
+
+            modelBuilder.Entity("FashionEcommerce.Core.Entities.Shipment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CarrierName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("EstimatedDeliveryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ShippedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("TrackingNumber");
+
+                    b.ToTable("Shipments");
+                });
+
+            modelBuilder.Entity("FashionEcommerce.Core.Entities.ShipmentEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ShipmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShipmentId");
+
+                    b.ToTable("ShipmentEvents");
                 });
 
             modelBuilder.Entity("FashionEcommerce.Core.Entities.User", b =>
@@ -1022,11 +1218,19 @@ namespace FashionEcommerce.Data.Migrations
 
             modelBuilder.Entity("FashionEcommerce.Core.Entities.Order", b =>
                 {
+                    b.HasOne("FashionEcommerce.Core.Entities.Shipment", "Shipment")
+                        .WithOne("Order")
+                        .HasForeignKey("FashionEcommerce.Core.Entities.Shipment", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FashionEcommerce.Core.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Shipment");
 
                     b.Navigation("User");
                 });
@@ -1102,6 +1306,17 @@ namespace FashionEcommerce.Data.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("FashionEcommerce.Core.Entities.ShipmentEvent", b =>
+                {
+                    b.HasOne("FashionEcommerce.Core.Entities.Shipment", "Shipment")
+                        .WithMany("Events")
+                        .HasForeignKey("ShipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shipment");
+                });
+
             modelBuilder.Entity("FashionEcommerce.Core.Entities.User", b =>
                 {
                     b.HasOne("FashionEcommerce.Core.Entities.Role", "Role")
@@ -1164,6 +1379,11 @@ namespace FashionEcommerce.Data.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("FashionEcommerce.Core.Entities.Shipment", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("FashionEcommerce.Core.Entities.User", b =>
