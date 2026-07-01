@@ -1,4 +1,5 @@
 using FashionEcommerce.Services.Models.Users;
+using FashionEcommerce.Services.Models.Rbac;
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
 using FashionEcommerce.Services.Interfaces;
@@ -24,7 +25,7 @@ namespace FashionEcommerce.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<ActionResult<IEnumerable<UserListItemDto>>> GetUsers()
         {
             var users = await _userService.GetAllUsersAsync();
@@ -86,6 +87,27 @@ namespace FashionEcommerce.API.Controllers
             user.UpdatedAt = DateTime.UtcNow;
 
             await _userService.UpdateUserAsync(user);
+
+            return Ok(MapProfile(user));
+        }
+
+        [HttpPut("{id}/role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<UserProfileDto>> UpdateUserRole(int id, [FromBody] UpdateUserRoleRequest request)
+        {
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+            if (user == null)
+                return NotFound("User not found");
+
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId && !r.IsDeleted);
+            if (role == null)
+                return BadRequest("Role is invalid");
+
+            user.RoleId = role.Id;
+            user.Role = role;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
 
             return Ok(MapProfile(user));
         }

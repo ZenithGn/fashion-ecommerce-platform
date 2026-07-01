@@ -196,7 +196,7 @@ namespace FashionEcommerce.API.Controllers
         /// Update order status (Admin/Staff only)
         /// </summary>
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<ActionResult<Order>> UpdateStatus(int id, [FromBody] UpdateOrderStatusRequest request)
         {
             try

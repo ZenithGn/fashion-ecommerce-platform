@@ -81,7 +81,7 @@ namespace FashionEcommerce.API.Controllers
         /// Create a new category
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<ActionResult<Category>> CreateCategory([FromBody] CreateCategoryDto dto)
         {
             try
@@ -106,7 +106,7 @@ namespace FashionEcommerce.API.Controllers
         /// Update an existing category
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto dto)
         {
             try
@@ -128,7 +128,7 @@ namespace FashionEcommerce.API.Controllers
         /// Delete a category
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try

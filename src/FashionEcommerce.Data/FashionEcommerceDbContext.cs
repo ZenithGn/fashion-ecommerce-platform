@@ -226,7 +226,8 @@ namespace FashionEcommerce.Data
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, RoleName = "Admin", Description = "System administrator", IsDeleted = false },
                 new Role { Id = 2, RoleName = "Customer", Description = "Customer account", IsDeleted = false },
-                new Role { Id = 3, RoleName = "Staff", Description = "Store staff account", IsDeleted = false }
+                new Role { Id = 3, RoleName = "Staff", Description = "Store staff account", IsDeleted = false },
+                new Role { Id = 4, RoleName = "Manager", Description = "Operations manager account", IsDeleted = false }
             );
 
             // Seed Permissions
@@ -236,7 +237,10 @@ namespace FashionEcommerce.Data
                 new Permission { Id = 3, ActionName = "orders.view", Description = "View orders", IsDeleted = false },
                 new Permission { Id = 4, ActionName = "orders.manage", Description = "Manage orders", IsDeleted = false },
                 new Permission { Id = 5, ActionName = "users.manage", Description = "Manage users and staff", IsDeleted = false },
-                new Permission { Id = 6, ActionName = "reports.view", Description = "View reports", IsDeleted = false }
+                new Permission { Id = 6, ActionName = "reports.view", Description = "View reports", IsDeleted = false },
+                new Permission { Id = 7, ActionName = "dashboard.view", Description = "View admin dashboard", IsDeleted = false },
+                new Permission { Id = 8, ActionName = "inventory.manage", Description = "Manage inventory", IsDeleted = false },
+                new Permission { Id = 9, ActionName = "roles.manage", Description = "Manage roles and permissions", IsDeleted = false }
             );
 
             // Seed Role Permissions
@@ -247,9 +251,22 @@ namespace FashionEcommerce.Data
                 new RolePermission { RoleId = 1, PermissionId = 4 },
                 new RolePermission { RoleId = 1, PermissionId = 5 },
                 new RolePermission { RoleId = 1, PermissionId = 6 },
+                new RolePermission { RoleId = 1, PermissionId = 7 },
+                new RolePermission { RoleId = 1, PermissionId = 8 },
+                new RolePermission { RoleId = 1, PermissionId = 9 },
                 new RolePermission { RoleId = 3, PermissionId = 1 },
                 new RolePermission { RoleId = 3, PermissionId = 3 },
                 new RolePermission { RoleId = 3, PermissionId = 4 },
+                new RolePermission { RoleId = 3, PermissionId = 7 },
+                new RolePermission { RoleId = 3, PermissionId = 8 },
+                new RolePermission { RoleId = 4, PermissionId = 1 },
+                new RolePermission { RoleId = 4, PermissionId = 2 },
+                new RolePermission { RoleId = 4, PermissionId = 3 },
+                new RolePermission { RoleId = 4, PermissionId = 4 },
+                new RolePermission { RoleId = 4, PermissionId = 5 },
+                new RolePermission { RoleId = 4, PermissionId = 6 },
+                new RolePermission { RoleId = 4, PermissionId = 7 },
+                new RolePermission { RoleId = 4, PermissionId = 8 },
                 new RolePermission { RoleId = 2, PermissionId = 1 }
             );
 
