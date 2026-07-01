@@ -57,8 +57,14 @@ namespace FashionEcommerce.Services.Products
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string? SKU { get; set; }
+        public string? Brand { get; set; }
+        public string? Color { get; set; }
+        public string? Size { get; set; }
         public decimal BasePrice { get; set; }
         public decimal Price { get; set; }
+        public bool IsActive { get; set; }
+        public string? ImageUrl { get; set; }
         public CategoryDto? Category { get; set; }
         public string? ThumbnailUrl { get; set; }
         public int AvailableQuantity { get; set; }

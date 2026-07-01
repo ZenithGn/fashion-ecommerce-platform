@@ -6,18 +6,20 @@ let currentProductPage = 1;
 
 // API Helper
 async function apiCall(endpoint, options = {}) {
+    const { skipAuth = false, ...fetchOptions } = options;
     const headers = {
         "Content-Type": "application/json",
     };
-    if (token) {
+    if (token && !skipAuth) {
         headers["Authorization"] = `Bearer ${token}`;
     }
 
     const config = {
-        ...options,
+        ...fetchOptions,
+        cache: "no-store",
         headers: {
             ...headers,
-            ...options.headers,
+            ...fetchOptions.headers,
         },
     };
 
@@ -167,6 +169,7 @@ async function handleLogin(e) {
 
     try {
         const data = await apiCall("/api/Auth/login", {
+            skipAuth: true,
             method: "POST",
             body: JSON.stringify({ email, password })
         });

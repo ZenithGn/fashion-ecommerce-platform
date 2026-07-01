@@ -38,21 +38,19 @@ namespace FashionEcommerce.API.Controllers
             {
                 var range = NormalizeDateRange(from, to);
 
-                var summaryTask = GetSummaryAsync(range.From, range.To);
-                var revenueChartTask = GetRevenueChartAsync(range.From, range.To, groupBy);
-                var recentOrdersTask = GetRecentOrdersAsync(range.From, range.To);
-                var stockAlertsTask = GetStockAlertsAsync();
-                var topProductsTask = GetTopProductsAsync(range.From, range.To);
-
-                await Task.WhenAll(summaryTask, revenueChartTask, recentOrdersTask, stockAlertsTask, topProductsTask);
+                var summary = await GetSummaryAsync(range.From, range.To);
+                var revenueChart = await GetRevenueChartAsync(range.From, range.To, groupBy);
+                var recentOrders = await GetRecentOrdersAsync(range.From, range.To);
+                var stockAlerts = await GetStockAlertsAsync();
+                var topProducts = await GetTopProductsAsync(range.From, range.To);
 
                 return Ok(new DashboardOverviewDto
                 {
-                    Summary = summaryTask.Result,
-                    RevenueChart = revenueChartTask.Result,
-                    RecentOrders = recentOrdersTask.Result,
-                    StockAlerts = stockAlertsTask.Result,
-                    TopProducts = topProductsTask.Result
+                    Summary = summary,
+                    RevenueChart = revenueChart,
+                    RecentOrders = recentOrders,
+                    StockAlerts = stockAlerts,
+                    TopProducts = topProducts
                 });
             }
             catch (ArgumentException ex)
@@ -190,66 +188,45 @@ namespace FashionEcommerce.API.Controllers
             var orderQuery = GetOrdersInRange(from, to);
             var revenueOrderQuery = orderQuery.Where(IsRevenueStatusExpression());
 
-            var totalUsersTask = _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted);
-            var totalCustomersTask = _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Customer");
-            var totalManagersTask = _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Manager");
-            var totalStaffTask = _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Staff");
-            var totalProductsTask = _context.Products.AsNoTracking().CountAsync(p => !p.IsDeleted);
-            var activeProductsTask = _context.Products.AsNoTracking().CountAsync(p => !p.IsDeleted && p.IsActive);
-            var totalCategoriesTask = _context.Categories.AsNoTracking().CountAsync(c => !c.IsDeleted);
-            var totalInventoriesTask = _context.Inventories.AsNoTracking().CountAsync(i => !i.IsDeleted);
-            var lowStockProductsTask = _context.Inventories.AsNoTracking().CountAsync(i => !i.IsDeleted && i.AvailableQuantity <= StockAlertThreshold);
-            var totalOrdersTask = orderQuery.CountAsync();
-            var pendingOrdersTask = orderQuery.CountAsync(o => o.Status == OrderStatus.Pending);
-            var processingOrdersTask = orderQuery.CountAsync(o => o.Status == OrderStatus.Processing);
-            var completedOrdersTask = orderQuery.CountAsync(o => o.Status == OrderStatus.Delivered);
-            var cancelledOrdersTask = orderQuery.CountAsync(o => o.Status == OrderStatus.Cancelled);
-            var totalRevenueTask = revenueOrderQuery.SumAsync(o => (decimal?)o.TotalPrice);
-            var pendingRevenueTask = orderQuery
+            var totalUsers = await _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted);
+            var totalCustomers = await _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Customer");
+            var totalManagers = await _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Manager");
+            var totalStaff = await _context.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.Role != null && u.Role.RoleName == "Staff");
+            var totalProducts = await _context.Products.AsNoTracking().CountAsync(p => !p.IsDeleted);
+            var activeProducts = await _context.Products.AsNoTracking().CountAsync(p => !p.IsDeleted && p.IsActive);
+            var totalCategories = await _context.Categories.AsNoTracking().CountAsync(c => !c.IsDeleted);
+            var totalInventories = await _context.Inventories.AsNoTracking().CountAsync(i => !i.IsDeleted);
+            var lowStockProducts = await _context.Inventories.AsNoTracking().CountAsync(i => !i.IsDeleted && i.Quantity - i.ReservedQuantity <= StockAlertThreshold);
+            var totalOrders = await orderQuery.CountAsync();
+            var pendingOrders = await orderQuery.CountAsync(o => o.Status == OrderStatus.Pending);
+            var processingOrders = await orderQuery.CountAsync(o => o.Status == OrderStatus.Processing);
+            var completedOrders = await orderQuery.CountAsync(o => o.Status == OrderStatus.Delivered);
+            var cancelledOrders = await orderQuery.CountAsync(o => o.Status == OrderStatus.Cancelled);
+            var totalRevenue = await revenueOrderQuery.SumAsync(o => (decimal?)o.TotalPrice) ?? 0;
+            var pendingRevenue = await orderQuery
                 .Where(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Processing)
-                .SumAsync(o => (decimal?)o.TotalPrice);
-
-            await Task.WhenAll(
-                totalUsersTask,
-                totalCustomersTask,
-                totalManagersTask,
-                totalStaffTask,
-                totalProductsTask,
-                activeProductsTask,
-                totalCategoriesTask,
-                totalInventoriesTask,
-                lowStockProductsTask,
-                totalOrdersTask,
-                pendingOrdersTask,
-                processingOrdersTask,
-                completedOrdersTask,
-                cancelledOrdersTask,
-                totalRevenueTask,
-                pendingRevenueTask);
-
-            var totalRevenue = totalRevenueTask.Result ?? 0;
-            var completedOrders = completedOrdersTask.Result;
+                .SumAsync(o => (decimal?)o.TotalPrice) ?? 0;
 
             return new DashboardSummaryDto
             {
                 From = from,
                 To = to,
-                TotalUsers = totalUsersTask.Result,
-                TotalCustomers = totalCustomersTask.Result,
-                TotalManagers = totalManagersTask.Result,
-                TotalStaff = totalStaffTask.Result,
-                TotalProducts = totalProductsTask.Result,
-                ActiveProducts = activeProductsTask.Result,
-                TotalCategories = totalCategoriesTask.Result,
-                TotalInventories = totalInventoriesTask.Result,
-                LowStockProducts = lowStockProductsTask.Result,
-                TotalOrders = totalOrdersTask.Result,
-                PendingOrders = pendingOrdersTask.Result,
-                ProcessingOrders = processingOrdersTask.Result,
+                TotalUsers = totalUsers,
+                TotalCustomers = totalCustomers,
+                TotalManagers = totalManagers,
+                TotalStaff = totalStaff,
+                TotalProducts = totalProducts,
+                ActiveProducts = activeProducts,
+                TotalCategories = totalCategories,
+                TotalInventories = totalInventories,
+                LowStockProducts = lowStockProducts,
+                TotalOrders = totalOrders,
+                PendingOrders = pendingOrders,
+                ProcessingOrders = processingOrders,
                 CompletedOrders = completedOrders,
-                CancelledOrders = cancelledOrdersTask.Result,
+                CancelledOrders = cancelledOrders,
                 TotalRevenue = totalRevenue,
-                PendingRevenue = pendingRevenueTask.Result ?? 0,
+                PendingRevenue = pendingRevenue,
                 AverageOrderValue = completedOrders == 0 ? 0 : totalRevenue / completedOrders
             };
         }
@@ -345,10 +322,10 @@ namespace FashionEcommerce.API.Controllers
         {
             return await _context.Inventories
                 .AsNoTracking()
-                .Where(i => !i.IsDeleted && i.AvailableQuantity <= StockAlertThreshold)
+                .Where(i => !i.IsDeleted && i.Quantity - i.ReservedQuantity <= StockAlertThreshold)
                 .Include(i => i.Product)
                 .ThenInclude(p => p!.Category)
-                .OrderBy(i => i.AvailableQuantity)
+                .OrderBy(i => i.Quantity - i.ReservedQuantity)
                 .Select(i => new StockAlertDto
                 {
                     ProductId = i.ProductId,
@@ -357,7 +334,7 @@ namespace FashionEcommerce.API.Controllers
                     CategoryName = i.Product != null && i.Product.Category != null ? i.Product.Category.Name : null,
                     Quantity = i.Quantity,
                     ReservedQuantity = i.ReservedQuantity,
-                    AvailableQuantity = i.AvailableQuantity,
+                    AvailableQuantity = i.Quantity - i.ReservedQuantity,
                     Location = i.Location
                 })
                 .ToListAsync();

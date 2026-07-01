@@ -47,8 +47,16 @@ namespace FashionEcommerce.Services.Products
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    SKU = p.SKU,
+                    Brand = p.Brand,
+                    Color = p.Color,
+                    Size = p.Size,
                     BasePrice = p.Price,
-                    Price = p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault(),
+                    Price = p.Variants.Any()
+                        ? p.Variants.OrderBy(v => v.PriceOverride ?? p.Price).Select(v => v.PriceOverride ?? p.Price).FirstOrDefault()
+                        : p.Price,
+                    IsActive = p.IsActive,
+                    ImageUrl = p.ImageUrl,
                     Category = p.Category != null ? new CategoryDto { Id = p.Category.Id, Name = p.Category.Name } : null,
                     ThumbnailUrl = p.Images.OrderByDescending(i => i.IsThumbnail).Select(i => i.ImageUrl).FirstOrDefault(),
                     AvailableQuantity = p.Inventories.Sum(i => (int?)(i.Quantity - i.ReservedQuantity)) ?? 0,

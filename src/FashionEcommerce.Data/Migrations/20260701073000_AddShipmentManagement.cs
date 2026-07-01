@@ -1,4 +1,7 @@
 using System;
+using FashionEcommerce.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -7,6 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FashionEcommerce.Data.Migrations
 {
     /// <inheritdoc />
+    [DbContext(typeof(FashionEcommerceDbContext))]
+    [Migration("20260701073000_AddShipmentManagement")]
     public partial class AddShipmentManagement : Migration
     {
         /// <inheritdoc />

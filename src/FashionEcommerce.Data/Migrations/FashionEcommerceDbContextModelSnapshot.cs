@@ -1102,7 +1102,7 @@ namespace FashionEcommerce.Data.Migrations
                             IsActive = true,
                             IsDeleted = false,
                             LastName = "User",
-                            PasswordHash = "hashed_password_here",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKeCR865UafnojgPG7COFHAkUKhEdzz8s0aNown6Eqa0Owaxy1uyy6bXG0UmmU18jg==",
                             PhoneNumber = "0123456789",
                             RoleId = 1
                         });
