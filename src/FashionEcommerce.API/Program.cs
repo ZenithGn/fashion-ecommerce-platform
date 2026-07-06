@@ -1,17 +1,12 @@
 using FashionEcommerce.Data;
-<<<<<<< HEAD
-using FashionEcommerce.API.Models.Email;
-using FashionEcommerce.API.Services.Email;
-using FashionEcommerce.Services.Interfaces;
-using FashionEcommerce.Services.Products;
-using FashionEcommerce.Services.Categories;
-=======
 using FashionEcommerce.Services.Models.Email;
 using FashionEcommerce.Services.Email;
 using FashionEcommerce.Services;
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Services;
->>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
+using FashionEcommerce.Services.Products;
+using FashionEcommerce.Services.Categories;
+using FashionEcommerce.Services.Vouchers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -40,8 +35,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 
-<<<<<<< HEAD
-=======
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
@@ -49,7 +42,6 @@ builder.Services.AddSwaggerGen(c =>
         c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     }
 
->>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -57,11 +49,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-<<<<<<< HEAD
-        Description = "Enter your JWT token. Example: Bearer eyJhbGciOi..."
-=======
         Description = "Enter JWT token with Bearer prefix. Example: Bearer {token}"
->>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -79,15 +67,16 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
-<<<<<<< HEAD
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-=======
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
->>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IVoucherService, VoucherService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");
@@ -115,7 +104,6 @@ builder.Services.AddAuthentication(options =>
 
 // Add DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 
 builder.Services.AddDbContext<FashionEcommerceDbContext>(options =>
     options.UseNpgsql(connectionString, npgsqlOptions =>
@@ -162,5 +150,5 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();
 
-// Đảm bảo class Program là public để WebApplicationFactory trong Test Project có thể truy cập
+// Ensure Program is public so WebApplicationFactory in the test project can access it.
 public partial class Program { }

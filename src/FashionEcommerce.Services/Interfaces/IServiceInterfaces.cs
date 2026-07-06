@@ -1,6 +1,7 @@
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Services.Products;
 using FashionEcommerce.Services.Categories;
+using FashionEcommerce.Services.Vouchers;
 
 namespace FashionEcommerce.Services.Interfaces
 {
@@ -54,6 +55,9 @@ namespace FashionEcommerce.Services.Interfaces
         Task<int> GetAvailableQuantityAsync(int productId);
         Task<bool> CheckAvailabilityAsync(int productId, int quantity);
         Task<Inventory> UpdateInventoryAsync(int productId, int quantity);
+        Task<IEnumerable<Inventory>> GetAllInventoriesAsync();
+        Task<Inventory> CreateOrUpdateInventoryAsync(Inventory inventory);
+        Task<bool> DeleteInventoryAsync(int inventoryId);
         Task<bool> ReserveInventoryAsync(int productId, int quantity);
         Task<bool> ReleaseReservationAsync(int productId, int quantity);
     }
@@ -69,6 +73,20 @@ namespace FashionEcommerce.Services.Interfaces
         Task<Cart> RemoveFromCartAsync(int cartId, int productId);
         Task<bool> ClearCartAsync(int cartId);
         Task<decimal> CalculateCartTotalAsync(int cartId);
+    }
+
+    /// <summary>
+    /// Interface for Voucher service
+    /// </summary>
+    public interface IVoucherService
+    {
+        Task<IEnumerable<VoucherDto>> GetAllVouchersAsync(bool includeInactive = true);
+        Task<VoucherDto?> GetVoucherByIdAsync(int id);
+        Task<VoucherDto?> GetVoucherByCodeAsync(string code);
+        Task<VoucherServiceResult<VoucherDto>> CreateVoucherAsync(CreateVoucherDto dto);
+        Task<VoucherServiceResult<VoucherDto>> UpdateVoucherAsync(int id, UpdateVoucherDto dto);
+        Task<bool> DeleteVoucherAsync(int id);
+        Task<VoucherValidationResultDto> ValidateVoucherAsync(ValidateVoucherRequest request);
     }
 
     /// <summary>

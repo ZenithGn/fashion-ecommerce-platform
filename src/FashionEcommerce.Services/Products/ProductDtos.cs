@@ -1,10 +1,6 @@
 using FashionEcommerce.Core.Entities;
 
-<<<<<<<< HEAD:src/FashionEcommerce.Services/Products/ProductDtos.cs
 namespace FashionEcommerce.Services.Products
-========
-namespace FashionEcommerce.Services.Models
->>>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4:src/FashionEcommerce.Services/Models/ProductsDtos.cs
 {
     public class ProductQueryParameters
     {

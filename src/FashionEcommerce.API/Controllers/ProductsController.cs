@@ -1,10 +1,6 @@
 using FashionEcommerce.Core.Entities;
-<<<<<<< HEAD
 using FashionEcommerce.Services.Interfaces;
 using FashionEcommerce.Services.Products;
-=======
-using FashionEcommerce.Services.Models;
->>>>>>> 04def7b23c69eb3e9586986d28602e92a2febef4
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +22,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get all products
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet]
         public async Task<ActionResult> GetAllProducts(
             [FromQuery] int page = 1,
@@ -73,7 +68,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get paged products and sort by price, size, color, name, or newest
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("paged-sort")]
         public async Task<ActionResult> GetPagedAndSortedProducts(
             [FromQuery] int page = 1,
@@ -113,7 +107,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get product by id
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProductById(int id)
         {
@@ -136,7 +129,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Get products by category
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("category/{categoryId}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategory(int categoryId)
         {
@@ -159,7 +151,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Advanced product search by name, description and filters
         /// </summary>
-        [Authorize(Roles = "Customer,Staff,Admin")]
         [HttpGet("search")]
         public async Task<ActionResult> SearchProducts(
             [FromQuery] string? searchTerm = null,
@@ -208,7 +199,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Create a new product
         /// </summary>
-        [Authorize(Roles = "Staff,Admin")]
         [HttpPost]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult> CreateProduct([FromBody] CreateProductDto dto)
@@ -234,7 +224,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Update an existing product
         /// </summary>
-        [Authorize(Roles = "Staff,Admin")]
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
@@ -257,7 +246,6 @@ namespace FashionEcommerce.API.Controllers
         /// <summary>
         /// Delete a product
         /// </summary>
-        [Authorize(Roles = "Staff,Admin")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteProduct(int id)

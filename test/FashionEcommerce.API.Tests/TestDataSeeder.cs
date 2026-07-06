@@ -1,5 +1,6 @@
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace FashionEcommerce.API.Tests
 {
@@ -7,7 +8,8 @@ namespace FashionEcommerce.API.Tests
     {
         public static void Seed(FashionEcommerceDbContext db)
         {
-            // Clear existing
+            SeedRolesAndUsers(db);
+
             if (db.Products.Any(p => p.Id == 100)) return;
 
             var cat = db.Categories.Find(1);
@@ -61,6 +63,28 @@ namespace FashionEcommerce.API.Tests
             db.ProductImages.Add(img);
             db.ProductVariants.Add(variant);
             db.Inventories.AddRange(inv, inv3);
+
+            db.SaveChanges();
+        }
+
+        private static void SeedRolesAndUsers(FashionEcommerceDbContext db)
+        {
+            if (!db.Users.Any(u => u.Email == "admin@example.com"))
+            {
+                var admin = new User
+                {
+                    Id = 900,
+                    RoleId = 1,
+                    FirstName = "Test",
+                    LastName = "Admin",
+                    Email = "admin@example.com",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "Password123!");
+                db.Users.Add(admin);
+            }
 
             db.SaveChanges();
         }

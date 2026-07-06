@@ -28,6 +28,7 @@ namespace FashionEcommerce.Data
         public DbSet<CartItem> CartItems { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Voucher> Vouchers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -189,6 +190,20 @@ namespace FashionEcommerce.Data
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(10,2)");
                 entity.HasIndex(new[] { "CartId", "ProductId" }).IsUnique();
+            });
+
+
+            // Configure Voucher entity
+            modelBuilder.Entity<Voucher>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Code).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.DiscountValue).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.MinimumOrderAmount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.MaximumDiscountAmount).HasColumnType("decimal(10,2)");
+                entity.HasIndex(e => e.Code).IsUnique();
             });
 
             // Configure Order entity
