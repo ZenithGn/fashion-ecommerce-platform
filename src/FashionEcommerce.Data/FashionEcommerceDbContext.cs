@@ -29,6 +29,7 @@ namespace FashionEcommerce.Data
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<Voucher> Vouchers { get; set; } = null!;
+        public DbSet<MarketingCampaign> MarketingCampaigns { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -192,6 +193,28 @@ namespace FashionEcommerce.Data
                 entity.HasIndex(new[] { "CartId", "ProductId" }).IsUnique();
             });
 
+
+
+            // Configure MarketingCampaign entity
+            modelBuilder.Entity<MarketingCampaign>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CampaignCode).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.Description).HasMaxLength(1000);
+                entity.Property(e => e.Budget).HasColumnType("decimal(12,2)");
+                entity.Property(e => e.ActualCost).HasColumnType("decimal(12,2)");
+                entity.Property(e => e.TargetAudience).HasMaxLength(300);
+                entity.Property(e => e.Goal).HasMaxLength(300);
+                entity.Property(e => e.LandingPageUrl).HasMaxLength(500);
+                entity.Property(e => e.Revenue).HasColumnType("decimal(12,2)");
+                entity.HasIndex(e => e.CampaignCode).IsUnique();
+
+                entity.HasOne(e => e.Voucher)
+                    .WithMany()
+                    .HasForeignKey(e => e.VoucherId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             // Configure Voucher entity
             modelBuilder.Entity<Voucher>(entity =>

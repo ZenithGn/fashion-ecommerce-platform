@@ -62,6 +62,55 @@ namespace FashionEcommerce.Services.Models.Dashboard
         public string? Location { get; set; }
     }
 
+
+    public sealed class AdminDashboardDto
+    {
+        public DashboardSummaryDto Summary { get; set; } = new();
+        public RevenueStatisticsDto RevenueStatistics { get; set; } = new();
+        public List<RecentOrderDto> RecentOrders { get; set; } = new();
+        public List<StockAlertDto> StockAlerts { get; set; } = new();
+        public List<TopProductDto> TopProducts { get; set; } = new();
+        public List<RevenueByPeriodDto> RevenueTrend { get; set; } = new();
+    }
+
+    public sealed class RevenueStatisticsDto
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public string GroupBy { get; set; } = "month";
+        public int TotalOrders { get; set; }
+        public int PaidOrders { get; set; }
+        public int PendingOrders { get; set; }
+        public int CancelledOrders { get; set; }
+        public int ReturnedOrders { get; set; }
+        public decimal GrossRevenue { get; set; }
+        public decimal PendingRevenue { get; set; }
+        public decimal CancelledRevenue { get; set; }
+        public decimal ReturnedRevenue { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal ShippingRevenue { get; set; }
+        public decimal AverageOrderValue { get; set; }
+        public List<RevenueByPeriodDto> RevenueByPeriod { get; set; } = new();
+        public List<OrderStatusRevenueDto> RevenueByStatus { get; set; } = new();
+    }
+
+    public sealed class RevenueByPeriodDto
+    {
+        public string Period { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
+        public int Orders { get; set; }
+        public decimal Revenue { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal AverageOrderValue { get; set; }
+    }
+
+    public sealed class OrderStatusRevenueDto
+    {
+        public string Status { get; set; } = string.Empty;
+        public int Orders { get; set; }
+        public decimal Revenue { get; set; }
+    }
+
     public sealed class DashboardOverviewDto
     {
         public DashboardSummaryDto Summary { get; set; } = new();

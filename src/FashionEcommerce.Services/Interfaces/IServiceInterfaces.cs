@@ -1,6 +1,7 @@
 using FashionEcommerce.Core.Entities;
 using FashionEcommerce.Services.Products;
 using FashionEcommerce.Services.Categories;
+using FashionEcommerce.Services.Marketing;
 using FashionEcommerce.Services.Vouchers;
 
 namespace FashionEcommerce.Services.Interfaces
@@ -87,6 +88,21 @@ namespace FashionEcommerce.Services.Interfaces
         Task<VoucherServiceResult<VoucherDto>> UpdateVoucherAsync(int id, UpdateVoucherDto dto);
         Task<bool> DeleteVoucherAsync(int id);
         Task<VoucherValidationResultDto> ValidateVoucherAsync(ValidateVoucherRequest request);
+    }
+
+    /// <summary>
+    /// Interface for Marketing service
+    /// </summary>
+    public interface IMarketingService
+    {
+        Task<IEnumerable<MarketingCampaignDto>> GetCampaignsAsync(MarketingCampaignQueryParameters parameters);
+        Task<MarketingCampaignDto?> GetCampaignByIdAsync(int id);
+        Task<MarketingServiceResult<MarketingCampaignDto>> CreateCampaignAsync(CreateMarketingCampaignDto dto);
+        Task<MarketingServiceResult<MarketingCampaignDto>> UpdateCampaignAsync(int id, UpdateMarketingCampaignDto dto);
+        Task<MarketingServiceResult<MarketingCampaignDto>> UpdateCampaignStatusAsync(int id, FashionEcommerce.Core.Entities.MarketingCampaignStatus status);
+        Task<MarketingServiceResult<MarketingCampaignDto>> UpdateCampaignMetricsAsync(int id, UpdateMarketingCampaignMetricsDto dto);
+        Task<bool> DeleteCampaignAsync(int id);
+        Task<MarketingSummaryDto> GetSummaryAsync();
     }
 
     /// <summary>

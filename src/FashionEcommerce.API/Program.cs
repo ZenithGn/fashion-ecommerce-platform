@@ -7,6 +7,7 @@ using FashionEcommerce.Services.Services;
 using FashionEcommerce.Services.Products;
 using FashionEcommerce.Services.Categories;
 using FashionEcommerce.Services.Vouchers;
+using FashionEcommerce.Services.Marketing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -77,6 +78,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IVoucherService, VoucherService>();
+builder.Services.AddScoped<IMarketingService, MarketingService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var jwtSecretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing");
