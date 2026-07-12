@@ -91,9 +91,9 @@ namespace FashionEcommerce.API.Controllers
                 }
 
                 int userId = GetCurrentUserId();
-                bool isAdminOrStaff = User.IsInRole("Admin") || User.IsInRole("Staff");
+                bool isAdminOrManagerOrStaff = IsAdminManagerOrStaff();
 
-                if (order.UserId != userId && !isAdminOrStaff)
+                if (order.UserId != userId && !isAdminOrManagerOrStaff)
                 {
                     return Forbid("Bạn không có quyền xem đơn hàng này.");
                 }
@@ -108,15 +108,14 @@ namespace FashionEcommerce.API.Controllers
         }
 
         /// <summary>
-        /// Get all orders (Admin/Staff only)
+        /// Get all orders (Admin/Manager/Staff only)
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
         {
             try
             {
-                bool isAdminOrStaff = User.IsInRole("Admin") || User.IsInRole("Staff");
-                if (!isAdminOrStaff)
+                if (!IsAdminManagerOrStaff())
                 {
                     return Forbid("Bạn không có quyền truy cập danh sách toàn bộ đơn hàng.");
                 }
@@ -165,9 +164,9 @@ namespace FashionEcommerce.API.Controllers
                 }
 
                 int userId = GetCurrentUserId();
-                bool isAdminOrStaff = User.IsInRole("Admin") || User.IsInRole("Staff");
+                bool isAdminOrManagerOrStaff = IsAdminManagerOrStaff();
 
-                if (order.UserId != userId && !isAdminOrStaff)
+                if (order.UserId != userId && !isAdminOrManagerOrStaff)
                 {
                     return Forbid("Bạn không có quyền hủy đơn hàng này.");
                 }
@@ -193,7 +192,7 @@ namespace FashionEcommerce.API.Controllers
         }
 
         /// <summary>
-        /// Update order status (Admin/Staff only)
+        /// Update order status (Admin/Manager/Staff only)
         /// </summary>
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin,Manager,Staff")]
@@ -218,6 +217,11 @@ namespace FashionEcommerce.API.Controllers
                 _logger.LogError(ex, "Lỗi khi cập nhật trạng thái đơn hàng {Id}", id);
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        private bool IsAdminManagerOrStaff()
+        {
+            return User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Staff");
         }
     }
 
