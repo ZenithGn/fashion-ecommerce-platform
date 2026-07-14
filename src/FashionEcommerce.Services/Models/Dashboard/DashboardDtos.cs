@@ -2,8 +2,12 @@ namespace FashionEcommerce.Services.Models.Dashboard
 {
     public sealed class DashboardSummaryDto
     {
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
         public int TotalUsers { get; set; }
         public int TotalCustomers { get; set; }
+        public int TotalManagers { get; set; }
+        public int TotalStaff { get; set; }
         public int TotalProducts { get; set; }
         public int ActiveProducts { get; set; }
         public int TotalCategories { get; set; }
@@ -16,15 +20,28 @@ namespace FashionEcommerce.Services.Models.Dashboard
         public int CancelledOrders { get; set; }
         public decimal TotalRevenue { get; set; }
         public decimal PendingRevenue { get; set; }
+        public decimal AverageOrderValue { get; set; }
     }
 
-    public sealed class MonthlyRevenueDto
+    public sealed class RevenueChartPointDto
     {
         public int Year { get; set; }
-        public int Month { get; set; }
+        public int? Month { get; set; }
+        public int? Day { get; set; }
         public string Label { get; set; } = string.Empty;
         public decimal Revenue { get; set; }
         public int Orders { get; set; }
+        public decimal AverageOrderValue { get; set; }
+    }
+
+    public sealed class RevenueChartDto
+    {
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public string GroupBy { get; set; } = "day";
+        public decimal TotalRevenue { get; set; }
+        public int TotalOrders { get; set; }
+        public List<RevenueChartPointDto> Points { get; set; } = new();
     }
 
     public sealed class RecentOrderDto
@@ -114,7 +131,9 @@ namespace FashionEcommerce.Services.Models.Dashboard
     public sealed class DashboardOverviewDto
     {
         public DashboardSummaryDto Summary { get; set; } = new();
+        public RevenueChartDto RevenueChart { get; set; } = new();
         public List<RecentOrderDto> RecentOrders { get; set; } = new();
         public List<StockAlertDto> StockAlerts { get; set; } = new();
+        public List<TopProductDto> TopProducts { get; set; } = new();
     }
 }

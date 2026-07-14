@@ -35,6 +35,9 @@ namespace FashionEcommerce.API.Controllers
             _emailSender = emailSender;
         }
 
+        /// <summary>
+        /// Register a new customer account
+        /// </summary>
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
         {
@@ -111,6 +114,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Authenticate user credentials and generate a JWT access token
+        /// </summary>
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
         {
@@ -172,6 +178,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Request a password reset token sent to the user's email address
+        /// </summary>
         [HttpPost("request-password-reset")]
         public async Task<ActionResult<PasswordResetResponse>> RequestPasswordReset([FromBody] RequestPasswordResetRequest request)
         {
@@ -223,6 +232,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Reset user password using a valid reset token
+        /// </summary>
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {

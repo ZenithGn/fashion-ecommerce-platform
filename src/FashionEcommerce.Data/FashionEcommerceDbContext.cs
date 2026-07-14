@@ -30,6 +30,8 @@ namespace FashionEcommerce.Data
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<Voucher> Vouchers { get; set; } = null!;
         public DbSet<MarketingCampaign> MarketingCampaigns { get; set; } = null!;
+        public DbSet<Shipment> Shipments { get; set; } = null!;
+        public DbSet<ShipmentEvent> ShipmentEvents { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -244,6 +246,11 @@ namespace FashionEcommerce.Data
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Shipment)
+                    .WithOne(s => s.Order)
+                    .HasForeignKey<Shipment>(s => s.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configure OrderItem entity
@@ -252,6 +259,30 @@ namespace FashionEcommerce.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(10,2)");
+            });
+
+            // Configure Shipment entity
+            modelBuilder.Entity<Shipment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CarrierName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.TrackingNumber).HasMaxLength(100);
+                entity.Property(e => e.ShippingFee).HasColumnType("decimal(10,2)");
+                entity.HasIndex(e => e.OrderId).IsUnique();
+                entity.HasIndex(e => e.TrackingNumber);
+                entity.HasMany(e => e.Events)
+                    .WithOne(e => e.Shipment)
+                    .HasForeignKey(e => e.ShipmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure ShipmentEvent entity
+            modelBuilder.Entity<ShipmentEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Location).HasMaxLength(255);
+                entity.Property(e => e.Note).HasMaxLength(500);
+                entity.HasIndex(e => e.ShipmentId);
             });
 
             // Add seed data
@@ -264,7 +295,8 @@ namespace FashionEcommerce.Data
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, RoleName = "Admin", Description = "System administrator", IsDeleted = false },
                 new Role { Id = 2, RoleName = "Customer", Description = "Customer account", IsDeleted = false },
-                new Role { Id = 3, RoleName = "Staff", Description = "Store staff account", IsDeleted = false }
+                new Role { Id = 3, RoleName = "Staff", Description = "Store staff account", IsDeleted = false },
+                new Role { Id = 4, RoleName = "Manager", Description = "Operations manager account", IsDeleted = false }
             );
 
             // Seed Permissions
@@ -274,7 +306,10 @@ namespace FashionEcommerce.Data
                 new Permission { Id = 3, ActionName = "orders.view", Description = "View orders", IsDeleted = false },
                 new Permission { Id = 4, ActionName = "orders.manage", Description = "Manage orders", IsDeleted = false },
                 new Permission { Id = 5, ActionName = "users.manage", Description = "Manage users and staff", IsDeleted = false },
-                new Permission { Id = 6, ActionName = "reports.view", Description = "View reports", IsDeleted = false }
+                new Permission { Id = 6, ActionName = "reports.view", Description = "View reports", IsDeleted = false },
+                new Permission { Id = 7, ActionName = "dashboard.view", Description = "View admin dashboard", IsDeleted = false },
+                new Permission { Id = 8, ActionName = "inventory.manage", Description = "Manage inventory", IsDeleted = false },
+                new Permission { Id = 9, ActionName = "roles.manage", Description = "Manage roles and permissions", IsDeleted = false }
             );
 
             // Seed Role Permissions
@@ -285,9 +320,22 @@ namespace FashionEcommerce.Data
                 new RolePermission { RoleId = 1, PermissionId = 4 },
                 new RolePermission { RoleId = 1, PermissionId = 5 },
                 new RolePermission { RoleId = 1, PermissionId = 6 },
+                new RolePermission { RoleId = 1, PermissionId = 7 },
+                new RolePermission { RoleId = 1, PermissionId = 8 },
+                new RolePermission { RoleId = 1, PermissionId = 9 },
                 new RolePermission { RoleId = 3, PermissionId = 1 },
                 new RolePermission { RoleId = 3, PermissionId = 3 },
                 new RolePermission { RoleId = 3, PermissionId = 4 },
+                new RolePermission { RoleId = 3, PermissionId = 7 },
+                new RolePermission { RoleId = 3, PermissionId = 8 },
+                new RolePermission { RoleId = 4, PermissionId = 1 },
+                new RolePermission { RoleId = 4, PermissionId = 2 },
+                new RolePermission { RoleId = 4, PermissionId = 3 },
+                new RolePermission { RoleId = 4, PermissionId = 4 },
+                new RolePermission { RoleId = 4, PermissionId = 5 },
+                new RolePermission { RoleId = 4, PermissionId = 6 },
+                new RolePermission { RoleId = 4, PermissionId = 7 },
+                new RolePermission { RoleId = 4, PermissionId = 8 },
                 new RolePermission { RoleId = 2, PermissionId = 1 }
             );
 
@@ -306,7 +354,7 @@ namespace FashionEcommerce.Data
                     FirstName = "Admin",
                     LastName = "User",
                     Email = "admin@fashionecommerce.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEOzwK0SYOoUJDmcnSlEZ1qfQ9N5os+cLuin70oW59QSlIfeFMFeYyEKIzzha7FyTHw==",
+                    PasswordHash = "AQAAAAIAAYagAAAAEPPUhsz8wxiknCxh215CEOfa5PN4I6k2/8FNTISUcmMQLCK94QpaY5uUHbIS5TQoNQ==",
                     PhoneNumber = "0123456789",
                     RoleId = 1,
                     IsActive = true

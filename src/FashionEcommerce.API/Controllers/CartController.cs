@@ -17,7 +17,9 @@ namespace FashionEcommerce.API.Controllers
             _logger = logger;
         }
 
-        // GET api/cart/user/{userId}
+        /// <summary>
+        /// Get cart details for a specific user ID
+        /// </summary>
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<Cart?>> GetCartByUserId(int userId)
         {
@@ -34,7 +36,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
-        // POST api/cart/user/{userId}/items
+        /// <summary>
+        /// Add a product variant to the user's cart
+        /// </summary>
         [HttpPost("user/{userId}/items")]
         public async Task<ActionResult<Cart>> AddToCart(int userId, [FromBody] AddToCartRequest request)
         {
@@ -50,7 +54,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
-        // PUT api/cart/{cartId}/items/{productId}
+        /// <summary>
+        /// Update the quantity of a product variant inside the cart
+        /// </summary>
         [HttpPut("{cartId}/items/{productId}")]
         public async Task<ActionResult<Cart>> UpdateCartItem(int cartId, int productId, [FromBody] UpdateCartItemRequest request)
         {
@@ -66,7 +72,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
-        // DELETE api/cart/{cartId}/items/{productId}
+        /// <summary>
+        /// Remove a product variant from the cart
+        /// </summary>
         [HttpDelete("{cartId}/items/{productId}")]
         public async Task<ActionResult<Cart>> RemoveFromCart(int cartId, int productId)
         {
@@ -82,7 +90,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
-        // DELETE api/cart/{cartId}
+        /// <summary>
+        /// Clear all items from a cart
+        /// </summary>
         [HttpDelete("{cartId}")]
         public async Task<ActionResult> ClearCart(int cartId)
         {
@@ -99,7 +109,9 @@ namespace FashionEcommerce.API.Controllers
             }
         }
 
-        // GET api/cart/{cartId}/total
+        /// <summary>
+        /// Calculate the total price and item count of a cart
+        /// </summary>
         [HttpGet("{cartId}/total")]
         public async Task<ActionResult<object>> GetCartTotal(int cartId)
         {

@@ -10,6 +10,8 @@ namespace FashionEcommerce.Services.Models.Users
         public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? LastLoginAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 
     public sealed class UserProfileDto
@@ -20,6 +22,13 @@ namespace FashionEcommerce.Services.Models.Users
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public string Role { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastLoginAt { get; set; }
+    }
+
+    public sealed class UpdateUserStatusRequest
+    {
         public bool IsActive { get; set; }
     }
 

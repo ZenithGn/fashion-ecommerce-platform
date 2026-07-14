@@ -133,7 +133,7 @@ namespace FashionEcommerce.API.Controllers
         /// Create new inventory record
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<ActionResult<Inventory>> CreateInventory([FromBody] Inventory inventory)
         {
             try
@@ -161,7 +161,7 @@ namespace FashionEcommerce.API.Controllers
         /// Update inventory quantity
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> UpdateInventory(int id, [FromBody] Inventory inventory)
         {
             try
@@ -185,7 +185,7 @@ namespace FashionEcommerce.API.Controllers
         /// Reserve inventory for order
         /// </summary>
         [HttpPost("{id}/reserve")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> ReserveInventory(int id, [FromBody] ReserveInventoryRequest request)
         {
             try
@@ -213,7 +213,7 @@ namespace FashionEcommerce.API.Controllers
         /// Release reserved inventory
         /// </summary>
         [HttpPost("{id}/release")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> ReleaseInventory(int id, [FromBody] ReleaseInventoryRequest request)
         {
             try
@@ -241,7 +241,7 @@ namespace FashionEcommerce.API.Controllers
         /// Delete inventory record
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Manager,Staff")]
         public async Task<IActionResult> DeleteInventory(int id)
         {
             try

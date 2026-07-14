@@ -6,472 +6,249 @@
 fashion-ecommerce-platform/
 │
 ├── 📄 Documentation Files
-│   ├── README.md                      (Original)
-│   ├── PROJECT_STRUCTURE.md           ✨ NEW - Detailed architecture
-│   ├── QUICK_START.md                 ✨ NEW - Getting started guide
-│   ├── DATABASE_SCHEMA.md             ✨ NEW - Database design & ERD
-│   ├── FILES_OVERVIEW.md              ✨ NEW - This file
-│   └── .gitignore                     ✨ NEW - Git ignore patterns
+│   ├── README.md                      (Original README)
+│   ├── PROJECT_STRUCTURE.md           ✨ UPDATED - Detailed architecture & endpoints
+│   ├── QUICK_START.md                 (Getting started guide)
+│   ├── DATABASE_SCHEMA.md             ✨ UPDATED - Database design & ERD
+│   └── FILES_OVERVIEW.md              ✨ UPDATED - This file
 │
 ├── 📦 Solution & Projects
-│   ├── FashionEcommerce.sln           ✨ NEW - Solution file
+│   ├── FashionEcommerce.sln           (Solution file)
 │   │
 │   └── src/
 │       │
 │       ├── 🟦 FashionEcommerce.API/
 │       │   ├── FashionEcommerce.API.csproj
-│       │   ├── Program.cs             ✨ Main startup file
-│       │   ├── appsettings.json       ✨ Configuration
+│       │   ├── Program.cs             (Main startup & DI configuration)
+│       │   ├── appsettings.json       (Configuration)
+│       │   ├── .env.example           (Environment template)
 │       │   │
-│       │   └── Controllers/
-│       │       ├── ProductsController.cs      ✨ Products API
-│       │       ├── CategoriesController.cs    ✨ Categories API
-│       │       └── InventoriesController.cs   ✨ Inventory API
+│       │   ├── Controllers/
+│       │   │   ├── AuthController.cs          ✨ Registration, login & password reset
+│       │   │   ├── CartController.cs          ✨ Cart management (add, update, delete)
+│       │   │   ├── CategoriesController.cs    ✨ Categories management
+│       │   │   ├── DashboardController.cs     ✨ Analytical analytics, revenues, counts
+│       │   │   ├── InventoriesController.cs   ✨ Stock levels and reservations
+│       │   │   ├── OrdersController.cs        ✨ Checkout & Order processing
+│       │   │   ├── PermissionsController.cs   ✨ Access permissions management
+│       │   │   ├── ProductsController.cs      ✨ Products catalog & variants
+│       │   │   ├── RolesController.cs         ✨ Security roles management
+│       │   │   ├── ShipmentsController.cs     ✨ Courier and tracking logs
+│       │   │   ├── UserAddressesController.cs ✨ Shipping address book
+│       │   │   └── UsersController.cs         ✨ Member account management
+│       │   │
+│       │   └── wwwroot/
+│       │       ├── index.html                 (Dashboard Admin GUI)
+│       │       ├── app.js                     (Dashboard Frontend Logic)
+│       │       └── styles.css                 (Dashboard styling)
 │       │
 │       ├── 📦 FashionEcommerce.Core/
 │       │   ├── FashionEcommerce.Core.csproj
 │       │   │
 │       │   └── Entities/
-│       │       ├── BaseEntity.cs              ✨ Base class for all entities
-│       │       ├── User.cs                    ✨ User model
-│       │       ├── Product.cs                 ✨ Product model
-│       │       ├── Category.cs                ✨ Category model
-│       │       ├── Inventory.cs               ✨ Inventory model
-│       │       ├── Cart.cs                    ✨ Cart & CartItem models
-│       │       └── Order.cs                   ✨ Order & OrderItem models
+│       │       ├── BaseEntity.cs              (Audit & Soft-delete columns)
+│       │       ├── User.cs                    (User account info)
+│       │       ├── UserAddress.cs             ✨ Multiple delivery address records
+│       │       ├── Role.cs                    ✨ Security Roles definitions
+│       │       ├── Permission.cs              ✨ Action privileges tags
+│       │       ├── RolePermission.cs          ✨ Junction table for Roles & Permissions
+│       │       ├── Product.cs                 (Product metadata)
+│       │       ├── ProductVariant.cs          ✨ Variant options (Size, Color, PriceOverrides)
+│       │       ├── ProductImage.cs            ✨ Product photo library
+│       │       ├── Category.cs                (Product hierarchical categories)
+│       │       ├── Inventory.cs               (Warehouse stock & reservations)
+│       │       ├── Cart.cs                    (Shopping cart headers)
+│       │       ├── CartItem.cs                (Shopping cart lines)
+│       │       ├── Order.cs                   (Order headers)
+│       │       ├── OrderItem.cs               (Order lines)
+│       │       ├── Shipment.cs                ✨ Delivery transit record
+│       │       └── ShipmentEvent.cs           ✨ Delivery step tracker
 │       │
 │       ├── 💾 FashionEcommerce.Data/
 │       │   ├── FashionEcommerce.Data.csproj
-│       │   ├── FashionEcommerceDbContext.cs   ✨ EF Core DbContext
+│       │   ├── FashionEcommerceDbContext.cs   (EF Core DB config, relationships, seeds)
 │       │   │
 │       │   └── Migrations/
-│       │       (Generated by EF Core)
+│       │       └── (Auto-generated C# migration logs)
 │       │
 │       └── 🔧 FashionEcommerce.Services/
 │           ├── FashionEcommerce.Services.csproj
 │           │
 │           ├── Interfaces/
-│           │   └── IServiceInterfaces.cs      ✨ Service interfaces
+│           │   └── IServiceInterfaces.cs      (Service abstractions)
 │           │
-│           └── Repositories/
-│               └── Repository.cs              ✨ Generic repository pattern
+│           ├── Repositories/
+│           │   └── Repository.cs              (Generic DB operations implementation)
+│           │
+│           ├── Email/
+│           │   └── SmtpEmailSender.cs         ✨ System email communications
+│           │
+│           └── Services/
+│               ├── ProductService.cs          ✨ Product catalog processing
+│               ├── ShipmentService.cs         ✨ Shipping & tracking operations
+│               └── (Other implementation modules)
 │
-└── 🔗 Git
-    └── .git/
+└── 🧪 Test Project
+    └── test/FashionEcommerce.API.Tests/
+        ├── FashionEcommerceApiFactory.cs      (Test server orchestrator)
+        ├── TestDataSeeder.cs                  (Mock database seeds)
+        ├── SearchTests.cs                     (Faceted search checks)
+        ├── ProductsControllerTests.cs         (Product variations test)
+        └── CheckoutIntegrationTests.cs        (End-to-end checkout & cancel tests)
 ```
+
+---
 
 ## 📄 File Descriptions
 
 ### **Documentation**
 
 #### README.md
+- General repository setup information and configuration commands.
 
-- Original project file
-- Repository information
+#### PROJECT_STRUCTURE.md
+- Comprehensive system architecture details.
+- Vietnamese documentation of core modules, databases, installation, and REST API routes.
 
-#### PROJECT_STRUCTURE.md (NEW)
+#### QUICK_START.md
+- Step-by-step setup guides, database configurations, and app launches.
 
-- Complete project architecture
-- Module descriptions (User, Product, Category, Order, Cart, Inventory)
-- Database schema overview
-- Installation & setup instructions
-- API endpoints documentation
-- Development roadmap
+#### DATABASE_SCHEMA.md
+- Text-based Entity Relationship Diagram (ERD).
+- SQL Column constraints, design patterns, workflows, and sample query plans.
 
-#### QUICK_START.md (NEW)
-
-- 5-step quick start guide
-- Environment setup
-- Database configuration
-- How to run the application
-- Common troubleshooting
-
-#### DATABASE_SCHEMA.md (NEW)
-
-- Entity Relationship Diagram (ERD)
-- Detailed table specifications
-- Column definitions with constraints
-- Relationships and foreign keys
-- Query patterns and workflows
-- Design decisions explained
-
-#### FILES_OVERVIEW.md (NEW)
-
-- This file
-- Complete file listing with descriptions
-- File statistics
-
-#### .gitignore (NEW)
-
-- Git ignore patterns for .NET projects
-- Build artifacts
-- NuGet packages
-- IDE specific files
+#### FILES_OVERVIEW.md
+- This file, compiling file mappings and checklist statuses.
 
 ---
 
-### **Solution & Projects**
+### **ASP.NET Core Web API Project (`FashionEcommerce.API`)**
 
-#### FashionEcommerce.sln (NEW)
+#### Program.cs
+- App startup configuration, CORS policies, Swagger initialization, DbContext settings, and JWT Authentication token authentication filters.
 
-- Visual Studio solution file
-- References to all 4 projects
-- Project GUIDs and build configurations
+#### appsettings.json
+- Connection strings, logging limits, JWT parameters, and mail SMTP port declarations.
 
----
-
-### **FashionEcommerce.API** (ASP.NET Core Web API)
-
-#### FashionEcommerce.API.csproj
-
-- Project file with dependencies
-- Target framework: .NET 8.0
-- NuGet packages: Swagger, Entity Framework Design
-
-#### Program.cs (NEW)
-
-- Application startup configuration
-- DbContext registration
-- Swagger setup
-- CORS configuration
-- Database migration
-
-#### appsettings.json (NEW)
-
-- Connection strings
-- JWT settings (placeholder)
-- Logging configuration
-- Application settings
-
-#### Controllers/ProductsController.cs (NEW)
-
-- GET /api/products - Get all products
-- GET /api/products/{id} - Get product by ID
-- GET /api/products/category/{categoryId} - Get by category
-- GET /api/products/search - Search products
-- POST /api/products - Create product
-- PUT /api/products/{id} - Update product
-- DELETE /api/products/{id} - Delete product
-
-#### Controllers/CategoriesController.cs (NEW)
-
-- GET /api/categories - Get all categories
-- GET /api/categories/{id} - Get category by ID
-- GET /api/categories/{id}/subcategories - Get subcategories
-- POST /api/categories - Create category
-- PUT /api/categories/{id} - Update category
-- DELETE /api/categories/{id} - Delete category
-
-#### Controllers/InventoriesController.cs (NEW)
-
-- GET /api/inventories - Get all inventories
-- GET /api/inventories/{id} - Get by ID
-- GET /api/inventories/product/{productId} - Get by product
-- GET /api/inventories/{id}/available - Get available quantity
-- POST /api/inventories/check-availability - Check availability
-- POST /api/inventories - Create inventory
-- PUT /api/inventories/{id} - Update inventory
-- POST /api/inventories/{id}/reserve - Reserve inventory
-- POST /api/inventories/{id}/release - Release reservation
-- DELETE /api/inventories/{id} - Delete inventory
+#### Controllers/
+- **AuthController.cs:** Controls user registration, JWT generation, and password resets.
+- **CartController.cs:** Handles adding, updating, and removing cart entries.
+- **CategoriesController.cs:** Exposes categories and subcategories.
+- **DashboardController.cs:** Serves administrative summary panels (total sales, user signups, inventory notices).
+- **InventoriesController.cs:** Performs safety stock checks and locks item count temporarily.
+- **OrdersController.cs:** Directs customer order creation, status checks, and cancellation requests.
+- **PermissionsController.cs:** Lists operational action identifiers for RBAC admin.
+- **ProductsController.cs:** Administers products, variant setups, and image libraries.
+- **RolesController.cs:** Oversees system role definitions and assignment policies.
+- **ShipmentsController.cs:** Tracks packages, carrier settings, and delivery transit routes.
+- **UserAddressesController.cs:** Maintains the address book of customers.
+- **UsersController.cs:** Handles profile editing and admin user query grids.
 
 ---
 
-### **FashionEcommerce.Core** (Domain Models)
+### **Domain Core Project (`FashionEcommerce.Core`)**
 
-#### FashionEcommerce.Core.csproj
-
-- Project file
-- Target framework: .NET 8.0
-- No external dependencies (except System.ComponentModel.DataAnnotations)
-
-#### Entities/BaseEntity.cs (NEW)
-
-```csharp
-public abstract class BaseEntity
-{
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public bool IsDeleted { get; set; }
-}
-```
-
-#### Entities/User.cs (NEW)
-
-- First/Last name
-- Email (unique)
-- Password hash
-- Address information
-- Phone number
-- Role (Customer, Admin, Staff)
-- Last login timestamp
-- Navigation: Orders, Cart
-
-#### Entities/Category.cs (NEW)
-
-- Name, Description
-- Parent category support (hierarchical)
-- IsActive flag
-- Image URL
-- Navigation: Products, SubCategories
-
-#### Entities/Product.cs (NEW)
-
-- Name, Description, Price
-- Discount price
-- SKU (unique)
-- Brand, Color, Size, Material
-- Rating (0-5), Review count
-- Image URL
-- Navigation: Category, Inventories, CartItems, OrderItems
-
-#### Entities/Inventory.cs (NEW)
-
-- Product reference
-- Quantity and Reserved quantity
-- Warehouse location
-- Last restock date
-- Calculated: Available quantity
-
-#### Entities/Cart.cs (NEW)
-
-- User reference (1:1)
-- Total price, Item count
-- Navigation: CartItems
-
-#### Entities/Order.cs (NEW)
-
-- Order number (unique)
-- Order status (Pending, Processing, Shipped, Delivered, Cancelled, Returned)
-- Price breakdown (SubTotal, Shipping, Tax, Discount)
-- Shipping address details
-- Tracking number
-- Shipping/Delivery dates
-- Navigation: OrderItems
+#### Entities/
+- **BaseEntity.cs:** Parent model holding `Id`, `CreatedAt`, `UpdatedAt`, and logical `IsDeleted` fields.
+- **User.cs:** Represents admin, staff, and customer accounts linked to roles and addresses.
+- **UserAddress.cs:** Multi-location shipping destination cards.
+- **Role.cs & Permission.cs & RolePermission.cs:** Implements Dynamic Role-Based Access Control (RBAC).
+- **Product.cs & ProductVariant.cs & ProductImage.cs:** Supports flexible variations (SKU, pricing override, colors, photo catalogs).
+- **Category.cs:** Handles nesting parent/child menu trees.
+- **Inventory.cs:** Prevents over-selling by tracking physical vs reserved stock levels.
+- **Cart.cs & CartItem.cs:** Tracks shoppers' selections before purchase.
+- **Order.cs & OrderItem.cs:** Persists checkouts, tax/shipping adjustments, size/color options chosen, and tracking numbers.
+- **Shipment.cs & ShipmentEvent.cs:** Tracks cargo transit timeline checkpoints.
 
 ---
 
-### **FashionEcommerce.Data** (Data Access Layer)
+### **Infrastructure Data Project (`FashionEcommerce.Data`)**
 
-#### FashionEcommerce.Data.csproj
-
-- Project file
-- Target framework: .NET 8.0
-- NuGet packages: Entity Framework Core 8.0, Npgsql PostgreSQL provider
-
-#### FashionEcommerceDbContext.cs (NEW)
-
-- Inherits from DbContext
-- DbSet properties for all entities
-- OnModelCreating configuration:
-  - Entity relationships
-  - Foreign key constraints
-  - Unique indexes
-  - Seed data
-- Seed data includes:
-  - 3 categories (Nam, Nữ, Trẻ em)
-  - 1 admin user
-  - 3 sample products
-  - Inventory records
+#### FashionEcommerceDbContext.cs
+- Establishes DB relationship keys, unique indexes, constraints, and mock seed values (such as categories, default Admin user, default products, roles, permissions).
 
 ---
 
-### **FashionEcommerce.Services** (Business Logic Layer)
+### **Business Services Project (`FashionEcommerce.Services`)**
 
-#### FashionEcommerce.Services.csproj
+#### Interfaces/IServiceInterfaces.cs
+- Defines abstractions for `IUserService`, `IProductService`, `ICategoryService`, `IInventoryService`, `ICartService`, `IOrderService`, `IShipmentService`, `IRolePermissionService`.
 
-- Project file
-- Target framework: .NET 8.0
-- References Core and Data projects
-
-#### Interfaces/IServiceInterfaces.cs (NEW)
-
-- IUserService interface
-- IProductService interface
-- ICategoryService interface
-- IInventoryService interface
-- ICartService interface
-- IOrderService interface
-
-#### Repositories/Repository.cs (NEW)
-
-- IRepository<T> generic interface
-- Repository<T> implementation
-- Methods:
-  - GetByIdAsync
-  - GetAllAsync
-  - FindAsync (with LINQ predicate)
-  - AddAsync
-  - UpdateAsync
-  - DeleteAsync (soft delete)
-  - CountAsync
-  - SaveChangesAsync
+#### Repositories/Repository.cs
+- Implements generic methods (`GetByIdAsync`, `GetAllAsync`, `AddAsync`, `UpdateAsync`, `DeleteAsync` as soft-delete, `SaveChangesAsync`) to enforce DRY principles.
 
 ---
 
 ## 📊 Project Statistics
 
-| Category                    | Count                 |
-| --------------------------- | --------------------- |
-| **Documentation Files**     | 5                     |
-| **C# Files**                | 13                    |
-| **Project Files (.csproj)** | 4                     |
-| **Solution Files**          | 1                     |
-| **Configuration Files**     | 2                     |
-| **Entity Models**           | 8                     |
-| **Controllers**             | 3                     |
-| **Interfaces**              | 1 file (6 interfaces) |
-| **Total Files Created**     | ~30+                  |
+| Category                        | Count                     |
+| ------------------------------- | ------------------------- |
+| **Documentation Files**         | 5                         |
+| **C# Entity Classes**           | 16                        |
+| **API Controller Files**        | 12                        |
+| **C# Service Files & Interfaces**| ~15                       |
+| **Automated Test Files**        | 5                         |
+| **Configuration / Project Files**| 6                         |
+| **Static UI Panel Files**       | 3                         |
+| **Total Files**                 | **~62**                   |
 
 ---
 
-## 🎯 Module Coverage
+## 🎯 Module Implementation Coverage
 
-### ✅ User Module
+### ✅ User & Security Module
+- [x] Entity model (User, Role, Permission, RolePermission)
+- [x] DbContext configuration & seed values
+- [x] API endpoints (Users, Roles, Permissions, Auth)
+- [x] JWT token generation & verification
+- [x] Role-Based Access Control (RBAC) middleware check
 
-- [x] Entity model
+### ✅ User Address Module
+- [x] Entity model (UserAddress)
 - [x] DbContext configuration
-- [ ] API endpoints (Users controller)
-- [ ] Service implementation
+- [x] API endpoints (UserAddressesController)
+- [x] Ownership authorization validation
 
 ### ✅ Category Module
-
-- [x] Entity model (with hierarchy)
+- [x] Entity model (hierarchical Category)
 - [x] DbContext configuration
 - [x] API endpoints (CategoriesController)
-- [ ] Service implementation
+- [x] Service business implementation
 
 ### ✅ Product Module
-
-- [x] Entity model
-- [x] DbContext configuration
+- [x] Entity models (Product, ProductVariant, ProductImage)
+- [x] DbContext configuration & indexes
 - [x] API endpoints (ProductsController)
-- [ ] Service implementation
+- [x] Advanced paged search & SKU lookup logic
 
 ### ✅ Inventory Module
-
 - [x] Entity model
 - [x] DbContext configuration
 - [x] API endpoints (InventoriesController)
-- [x] Available quantity calculation
-- [ ] Service implementation
+- [x] Stock reservation & release math
 
 ### ✅ Cart Module
-
-- [x] Entity models (Cart + CartItem)
+- [x] Entity models (Cart, CartItem)
 - [x] DbContext configuration
-- [ ] API endpoints
-- [ ] Service implementation
+- [x] API endpoints (CartController)
+- [x] Dynamic cart calculations
 
-### ✅ Order Module
-
-- [x] Entity models (Order + OrderItem)
+### ✅ Order & Shipment Module
+- [x] Entity models (Order, OrderItem, Shipment, ShipmentEvent)
 - [x] DbContext configuration
-- [x] Order status enum
-- [ ] API endpoints
-- [ ] Service implementation
+- [x] API endpoints (OrdersController, ShipmentsController)
+- [x] Transactional Checkout flow
+- [x] Logistical carrier and tracking step update logic
 
 ---
 
-## 🔄 Relationships Implemented
+## 🛠️ Technologies Applied
+- **Target SDK:** .NET 8.0
+- **Database Engine:** PostgreSQL (Neon database)
+- **Object Relational Mapper:** Entity Framework Core 8.0
+- **Testing Engine:** XUnit, FluentAssertions, Microsoft.NET.Test.Sdk, Microsoft.AspNetCore.Mvc.Testing
+- **Security Protocols:** Microsoft.AspNetCore.Authentication.JwtBearer (JWT Tokens)
+- **Email Gateway:** MailKit / SMTP Client
 
-- User (1) ─── (N) Orders
-- User (1) ─── (1) Cart
-- Category (1) ─── (N) Products
-- Category (1) ─── (N) SubCategories (self-referential)
-- Product (1) ─── (N) Inventories
-- Product (1) ─── (N) CartItems
-- Product (1) ─── (N) OrderItems
-- Cart (1) ─── (N) CartItems
-- Order (1) ─── (N) OrderItems
-
----
-
-## 🛠️ Technologies Used
-
-- **.NET Framework**: .NET 8.0
-- **Web Framework**: ASP.NET Core 8.0
-- **ORM**: Entity Framework Core 8.0
-- **Database**: PostgreSQL / Neon
-- **API Documentation**: Swagger 6.4.6
-- **Language**: C# 12.0
-- **Package Manager**: NuGet
-
----
-
-## 🚀 Next Steps
-
-### Immediate (Phase 2)
-
-- [ ] Create Users controller
-- [ ] Create Orders controller
-- [ ] Create Carts controller
-- [ ] Implement service layer classes
-- [ ] Add validation rules
-
-### Short Term (Phase 3)
-
-- [x] Authentication (JWT)
-- [ ] Authorization (Role-based)
-- [ ] Unit tests
-- [ ] Integration tests
-- [ ] DTOs (Data Transfer Objects)
-- [ ] AutoMapper integration
-
-### Medium Term (Phase 4)
-
-- [ ] Payment gateway integration
-- [ ] Email notifications
-- [ ] Image upload service
-- [ ] Advanced search/filtering
-- [ ] Review system
-- [ ] Wishlist functionality
-
-### Long Term (Phase 5)
-
-- [ ] Logging & Monitoring
-- [ ] Caching (Redis)
-- [ ] Message queue (RabbitMQ)
-- [ ] Performance optimization
-- [ ] API versioning
-- [ ] Analytics
-
----
-
-## 🎓 Architecture Highlights
-
-1. **Clean Architecture**: Separated concerns across layers
-2. **SOLID Principles**: Following industry best practices
-3. **Repository Pattern**: Data access abstraction
-4. **Dependency Injection**: Built-in ASP.NET Core DI
-5. **Entity Framework Core**: Modern ORM with async support
-6. **RESTful APIs**: Standard HTTP conventions
-7. **Soft Delete**: Data preservation
-8. **Audit Trail**: CreatedAt/UpdatedAt tracking
-9. **Seed Data**: Sample data for testing
-
----
-
-## 📝 Notes
-
-- All date/time values use UTC
-- Passwords should be hashed using BCrypt or similar before storage
-- All prices use DECIMAL(10,2) to prevent floating-point errors
-- Soft delete pattern enabled for all entities
-- Foreign key constraints follow best practices (RESTRICT for users, CASCADE for items)
-- All entity IDs are auto-incrementing integers
-
----
-
-## 🔏 File Encoding
-
-All C# files: UTF-8 with BOM
-All JSON files: UTF-8
-All Markdown files: UTF-8
-
----
-
-**Document Version**: 1.0  
-**Last Generated**: 2026-05-26  
-**Status**: Complete - Ready for Migration and Controller Implementation
+**Document Version:** 2.0  
+**Last Updated:** 2026-07-01  

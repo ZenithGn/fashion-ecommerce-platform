@@ -20,6 +20,9 @@ namespace FashionEcommerce.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get all shipping addresses of the current logged-in user
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAddressDto>>> GetMyAddresses()
         {
@@ -38,6 +41,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(addresses.Select(MapAddress));
         }
 
+        /// <summary>
+        /// Get details of a specific shipping address by ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<UserAddressDto>> GetAddressById(int id)
         {
@@ -50,6 +56,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(MapAddress(address));
         }
 
+        /// <summary>
+        /// Create a new shipping address for the logged-in user
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<UserAddressDto>> CreateAddress([FromBody] CreateUserAddressRequest request)
         {
@@ -90,6 +99,9 @@ namespace FashionEcommerce.API.Controllers
             return CreatedAtAction(nameof(GetAddressById), new { id = address.Id }, MapAddress(address));
         }
 
+        /// <summary>
+        /// Update an existing shipping address
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<UserAddressDto>> UpdateAddress(int id, [FromBody] UpdateUserAddressRequest request)
         {
@@ -123,6 +135,9 @@ namespace FashionEcommerce.API.Controllers
             return Ok(MapAddress(address));
         }
 
+        /// <summary>
+        /// Delete (soft delete) a shipping address by ID
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
@@ -156,6 +171,9 @@ namespace FashionEcommerce.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Set a specific shipping address as the default address
+        /// </summary>
         [HttpPut("{id}/set-default")]
         public async Task<IActionResult> SetDefaultAddress(int id)
         {
