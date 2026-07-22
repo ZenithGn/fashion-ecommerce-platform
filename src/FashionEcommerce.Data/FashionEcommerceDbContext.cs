@@ -204,6 +204,7 @@ namespace FashionEcommerce.Data
                 entity.Property(e => e.TaxAmount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.DiscountAmount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.PaymentMethod).HasMaxLength(50);
                 entity.HasMany(e => e.Items)
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
