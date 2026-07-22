@@ -32,6 +32,9 @@ namespace FashionEcommerce.Core.Entities
         [Column(TypeName = "decimal(10,2)")]
         public decimal TotalPrice { get; set; }
 
+        [StringLength(50)]
+        public string? PaymentMethod { get; set; }
+
         [StringLength(500)]
         public string? ShippingAddress { get; set; }
 

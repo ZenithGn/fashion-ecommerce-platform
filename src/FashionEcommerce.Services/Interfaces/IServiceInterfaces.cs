@@ -3,6 +3,7 @@ using FashionEcommerce.Services.Products;
 using FashionEcommerce.Services.Categories;
 using FashionEcommerce.Services.Marketing;
 using FashionEcommerce.Services.Vouchers;
+using FashionEcommerce.Services.Models.Orders;
 
 namespace FashionEcommerce.Services.Interfaces
 {
@@ -116,8 +117,8 @@ namespace FashionEcommerce.Services.Interfaces
     {
         Task<Order?> GetOrderByIdAsync(int orderId);
         Task<Order?> GetOrderByNumberAsync(string orderNumber);
-        Task<IEnumerable<Order>> GetUserOrdersAsync(int userId);
-        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<PagedResult<Order>> GetUserOrdersAsync(int userId, OrderQueryParameters parameters);
+        Task<PagedResult<Order>> GetAllOrdersAsync(OrderQueryParameters parameters);
         Task<Order> CreateOrderAsync(Order order);
         Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status);
         Task<bool> CancelOrderAsync(int orderId);
